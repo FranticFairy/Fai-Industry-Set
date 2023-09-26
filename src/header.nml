@@ -1,0 +1,22 @@
+grf {
+	grfid: "TT\04\01";
+	name: string(STR_GRF_NAME);
+	desc: string(STR_GRF_DESC);
+	version: 27;
+	min_compatible_version: 23;
+
+    param 0 {
+		param_primary_quadrants {
+			type: bool;
+			name: string(STR_PARAM_PRIMARY_QUADRANTS_NAME);
+			desc: string(STR_PARAM_PRIMARY_QUADRANTS_DESC);
+			def_value: 1;
+		}
+	}
+}
+
+/* Disable base game industries */
+disable_item(FEAT_INDUSTRIES);
+
+/* Disable base game cargos */
+disable_item(FEAT_CARGOS);

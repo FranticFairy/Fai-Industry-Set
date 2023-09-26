@@ -1,0 +1,49 @@
+
+/* *** Begin Coal Mine *** */
+
+spritelayout sprlay_coal_mine_6 {
+	ground		{sprite:2022;}
+}
+
+item (FEAT_INDUSTRYTILES, ind_tile_coal_mine_1) { // hoist
+property {
+	substitute:         02;
+	land_shape_flags:    bitmask(LSF_ONLY_ON_FLAT_LAND);
+	special_flags: bitmask(INDTILE_FLAG_ACCEPT_ALL);
+}
+graphics {
+	default:			sprlay_coal_mine_6;
+}}
+
+tilelayout industry_layout_coal_mine {
+	0,0:	ind_tile_coal_mine_1;	0,1:	ind_tile_coal_mine_1;	0,2:	ind_tile_coal_mine_1;	0,3:	ind_tile_coal_mine_1;
+	1,0:	ind_tile_coal_mine_1;	1,1:	ind_tile_coal_mine_1;	1,2:	ind_tile_coal_mine_1;	1,3:	ind_tile_coal_mine_1;
+	2,0:	ind_tile_coal_mine_1;	2,1:	ind_tile_coal_mine_1;	2,2:	ind_tile_coal_mine_1;	2,3:	ind_tile_coal_mine_1;
+}
+
+/* Location check */
+switch (FEAT_INDUSTRIES, SELF, loc_check_coal_mine, IsTown() && IsInQuadrantN() && IndustryElevationCheck(4,255)) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_PRIMARY);}
+
+/* Coal Mine industry */
+item (FEAT_INDUSTRIES, industry_coal_mine, 0) {
+	property {
+        substitute: 0;
+        override: 0;
+		life_type: IND_LIFE_TYPE_EXTRACTIVE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("COAL",15),];
+		name: string(STR_INDUSTRY_COAL_MINE);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_COAL_MINE));
+        prob_map_gen: 2; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 255;
+		layouts: [
+			industry_layout_coal_mine,
+		];
+	}
+	graphics {
+        location_check: loc_check_coal_mine;
+	}
+}
+
+/* *** End Coal Mine *** */

@@ -1,0 +1,282 @@
+
+/* *** Begin Sawmill *** */
+
+spritelayout sprlay_sawmill_1 {
+	ground		{sprite:2022;}
+	building	{sprite:2070;}
+}
+
+spritelayout sprlay_sawmill_2 {
+	ground		{sprite:2022;}
+	building	{sprite:2071;}
+}
+
+spritelayout sprlay_sawmill_3 {
+	ground		{sprite:2022;}
+	building	{sprite:2063;}
+}
+
+spritelayout sprlay_sawmill_4 {
+	ground		{sprite:2022;}
+	building	{sprite:2069;}
+}
+
+spritelayout sprlay_sawmill_5 {
+	ground		{sprite:2022;}
+	building	{sprite:2066;}
+}
+
+spritelayout sprlay_sawmill_6 {
+	ground		{sprite:2022;}
+}
+
+item (FEAT_INDUSTRYTILES, ind_tile_sawmill_1) {
+	property {
+		substitute:				11;
+		special_flags:			bitmask(INDTILE_FLAG_ACCEPT_ALL);
+		accepted_cargos: [[PASS, 8]];
+	}
+	graphics {
+		default:				sprlay_sawmill_1;
+	}
+}
+item (FEAT_INDUSTRYTILES, ind_tile_sawmill_2) {
+	property {
+		substitute:				02;
+		special_flags:			bitmask(INDTILE_FLAG_ACCEPT_ALL);
+		accepted_cargos: [[PASS, 8]];
+	}
+	graphics {
+		default:				sprlay_sawmill_2;
+	}
+}
+item (FEAT_INDUSTRYTILES, ind_tile_sawmill_3) {
+	property {
+		substitute:				02;
+		special_flags:			bitmask(INDTILE_FLAG_ACCEPT_ALL);
+		accepted_cargos: [[PASS, 8]];
+	}
+	graphics {
+		default:				sprlay_sawmill_3;
+	}
+}
+item (FEAT_INDUSTRYTILES, ind_tile_sawmill_4) {
+	property {
+		substitute:				02;
+		special_flags:			bitmask(INDTILE_FLAG_ACCEPT_ALL);
+		accepted_cargos: [[PASS, 8]];
+	}
+	graphics {
+		default:				sprlay_sawmill_4;
+	}
+}
+item (FEAT_INDUSTRYTILES, ind_tile_sawmill_5) {
+	property {
+		substitute:				02;
+		special_flags:			bitmask(INDTILE_FLAG_ACCEPT_ALL);
+		accepted_cargos: [[PASS, 8]];
+	}
+	graphics {
+		default:				sprlay_sawmill_5;
+	}
+}
+item (FEAT_INDUSTRYTILES, ind_tile_sawmill_6) {
+	property {
+		substitute:				02;
+		special_flags:			bitmask(INDTILE_FLAG_ACCEPT_ALL);
+		accepted_cargos: [[PASS, 8]];
+	}
+	graphics {
+		default:				sprlay_sawmill_6;
+	}
+}
+
+tilelayout industry_layout_sawmill_1 {
+	0,0:	ind_tile_sawmill_5;	0,1:	ind_tile_sawmill_6;	0,2:	ind_tile_sawmill_4;
+	1,0:	ind_tile_sawmill_3;	1,1:	ind_tile_sawmill_1;	1,2:	ind_tile_sawmill_2;
+}
+
+tilelayout industry_layout_sawmill_2 {
+	0,0:	ind_tile_sawmill_1;	0,1:	ind_tile_sawmill_6;	0,2:	ind_tile_sawmill_4;	0,3:	ind_tile_sawmill_4;
+	1,0:	ind_tile_sawmill_1;	1,1:	ind_tile_sawmill_3;	1,2:	ind_tile_sawmill_2;	1,3:	ind_tile_sawmill_5;
+}
+
+tilelayout industry_layout_sawmill_3 {
+	0,0:	ind_tile_sawmill_5;	0,1:	ind_tile_sawmill_1;	0,2:	ind_tile_sawmill_1;
+	1,0:	ind_tile_sawmill_6;	1,1:	ind_tile_sawmill_4;	1,2:	ind_tile_sawmill_2;
+								2,1:	ind_tile_sawmill_3;	2,2:	ind_tile_sawmill_6;
+}
+
+produce (produce_sawmill,
+    [WOOD: LOAD_TEMP(1);],                      // consume
+    [WDPR: LOAD_TEMP(1); PASS: LOAD_TEMP(2);], // produce
+    0                                           // don't run callback again
+)
+
+/* If we don't have enough stored, produce as much as we can anyway. */
+switch (FEAT_INDUSTRIES, SELF, switch_produce_sawmill_min, [
+    STORE_TEMP(incoming_cargo_waiting("WOOD"), 1), // Set the production amount to the current input stockpile
+    STORE_TEMP((((LOAD_TEMP(1) / 4) * transported_last_month_pct("WDPR")) / 100), 2), // Set the passenger production level
+    ]) {produce_sawmill;}
+
+/* Determine the production level and see if we have enough stored to meet it. */
+switch (FEAT_INDUSTRIES, SELF, switch_produce_sawmill_2, [
+    STORE_TEMP(GetSecondaryProductionLevel(), 1), // Get production level
+    STORE_TEMP((((LOAD_TEMP(1) / 4) * transported_last_month_pct("WDPR")) / 100), 2), // Set the passenger production level
+    incoming_cargo_waiting("WOOD") > LOAD_TEMP(1), // Check if there's enough input cargo for this production level
+    ]) {
+        1: produce_sawmill;
+        switch_produce_sawmill_min;
+    }
+
+/* If no cargo is waiting, bail out. */
+switch (FEAT_INDUSTRIES, SELF, switch_produce_sawmill, incoming_cargo_waiting("WOOD") > 0)
+    {
+        1: switch_produce_sawmill_2;
+        produce_none;
+    }
+
+/* Location check */
+switch (FEAT_INDUSTRIES, SELF, loc_check_sawmill, IsCity() && IsNearTown() && CityHasNoSecondaryIndustries() && NoNearbyCompetitors(industry_sawmill, 100)) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_SECONDARY);}
+
+item (FEAT_INDUSTRIES, industry_sawmill, 4) {
+	property {
+		substitute: INDUSTRYTYPE_SAWMILL;
+		life_type: IND_LIFE_TYPE_PROCESSING;
+		spec_flags: 0;
+		cargo_types: [
+            accept_cargo("WOOD"),
+            produce_cargo("WDPR", 0),
+            produce_cargo("PASS", 0),
+        ];
+		name: TTD_STR_INDUSTRY_NAME_SAWMILL;
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_NAME_SAWMILL));
+        prob_map_gen: 1;
+        prob_in_game: 0;
+		map_colour: 111;
+        fund_cost_multiplier: 255;
+		layouts: [
+			industry_layout_sawmill_1,
+			industry_layout_sawmill_2,
+			industry_layout_sawmill_3,
+		];
+	}
+	graphics {
+		extra_text_industry: StringGetSecondaryHelptext();
+        location_check: loc_check_sawmill;
+        produce_256_ticks: switch_produce_sawmill;
+        /* Don't allow any production changes */
+		build_prod_change: 16; // 100% production
+		monthly_prod_change: CB_RESULT_IND_PROD_NO_CHANGE;
+		random_prod_change: CB_RESULT_IND_PROD_NO_CHANGE;
+	}
+}
+
+item (FEAT_OBJECTS, object_item_sawmill_1) {
+	property {
+		class:					"HSIN";
+		classname:				string(STR_NAME_OBJECT_MENU);
+		name:					TTD_STR_INDUSTRY_NAME_SAWMILL;
+		climates_available:		ALL_CLIMATES;
+		object_flags:			bitmask(OBJ_FLAG_ANYTHING_REMOVE);
+		build_cost_multiplier:	0;
+		remove_cost_multiplier:	0;
+		size:					[1,1];
+		introduction_date:		1700;
+		num_views:				1;
+	}
+	graphics {
+		default:				sprlay_sawmill_1;
+	}
+}
+
+item (FEAT_OBJECTS, object_item_sawmill_2) {
+	property {
+		class:					"HSIN";
+		classname:				string(STR_NAME_OBJECT_MENU);
+		name:					TTD_STR_INDUSTRY_NAME_SAWMILL;
+		climates_available:		ALL_CLIMATES;
+		object_flags:			bitmask(OBJ_FLAG_ANYTHING_REMOVE);
+		build_cost_multiplier:	0;
+		remove_cost_multiplier:	0;
+		size:					[1,1];
+		introduction_date:		1700;
+		num_views:				1;
+	}
+	graphics {
+		default:				sprlay_sawmill_2;
+	}
+}
+
+item (FEAT_OBJECTS, object_item_sawmill_3) {
+	property {
+		class:					"HSIN";
+		classname:				string(STR_NAME_OBJECT_MENU);
+		name:					TTD_STR_INDUSTRY_NAME_SAWMILL;
+		climates_available:		ALL_CLIMATES;
+		object_flags:			bitmask(OBJ_FLAG_ANYTHING_REMOVE);
+		build_cost_multiplier:	0;
+		remove_cost_multiplier:	0;
+		size:					[1,1];
+		introduction_date:		1700;
+		num_views:				1;
+	}
+	graphics {
+		default:				sprlay_sawmill_3;
+	}
+}
+
+item (FEAT_OBJECTS, object_item_sawmill_4) {
+	property {
+		class:					"HSIN";
+		classname:				string(STR_NAME_OBJECT_MENU);
+		name:					TTD_STR_INDUSTRY_NAME_SAWMILL;
+		climates_available:		ALL_CLIMATES;
+		object_flags:			bitmask(OBJ_FLAG_ANYTHING_REMOVE);
+		build_cost_multiplier:	0;
+		remove_cost_multiplier:	0;
+		size:					[1,1];
+		introduction_date:		1700;
+		num_views:				1;
+	}
+	graphics {
+		default:				sprlay_sawmill_4;
+	}
+}
+
+item (FEAT_OBJECTS, object_item_sawmill_5) {
+	property {
+		class:					"HSIN";
+		classname:				string(STR_NAME_OBJECT_MENU);
+		name:					TTD_STR_INDUSTRY_NAME_SAWMILL;
+		climates_available:		ALL_CLIMATES;
+		object_flags:			bitmask(OBJ_FLAG_ANYTHING_REMOVE);
+		build_cost_multiplier:	0;
+		remove_cost_multiplier:	0;
+		size:					[1,1];
+		introduction_date:		1700;
+		num_views:				1;
+	}
+	graphics {
+		default:				sprlay_sawmill_5;
+	}
+}
+item (FEAT_OBJECTS, object_item_sawmill_6) {
+	property {
+		class:					"HSIN";
+		classname:				string(STR_NAME_OBJECT_MENU);
+		name:					TTD_STR_INDUSTRY_NAME_SAWMILL;
+		climates_available:		ALL_CLIMATES;
+		object_flags:			bitmask(OBJ_FLAG_ANYTHING_REMOVE,OBJ_FLAG_ALLOW_BRIDGE);
+		build_cost_multiplier:	0;
+		remove_cost_multiplier:	0;
+		size:					[1,1];
+		introduction_date:		1700;
+		num_views:				1;
+	}
+	graphics {
+		default:				sprlay_sawmill_6;
+	}
+}
+
+/* *** End Sawmill *** */

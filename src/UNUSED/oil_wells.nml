@@ -1,0 +1,188 @@
+/* *** Begin Oil Wells *** */
+
+spritelayout sprlay_oil_wells_1_a { 
+	ground		{sprite:2173;}
+	building	{sprite:2174;}
+}
+spritelayout sprlay_oil_wells_1_b { 
+	ground		{sprite:2173;}
+	building	{sprite:2175;}
+}
+spritelayout sprlay_oil_wells_1_c { 
+	ground		{sprite:2173;}
+	building	{sprite:2176;}
+}
+spritelayout sprlay_oil_wells_1_d { 
+	ground		{sprite:2173;}
+	building	{sprite:2177;}
+}
+spritelayout sprlay_oil_wells_1_e { 
+	ground		{sprite:2173;}
+	building	{sprite:2178;}
+}
+spritelayout sprlay_oil_wells_1_f { 
+	ground		{sprite:2173;}
+	building	{sprite:2179;}
+}
+
+switch (FEAT_INDUSTRYTILES, SELF, oil_wells_tile_animation, animation_frame) {
+	1:	sprlay_oil_wells_1_a;
+	2:	sprlay_oil_wells_1_b;
+	3:	sprlay_oil_wells_1_c;
+	4:	sprlay_oil_wells_1_d;
+	5:	sprlay_oil_wells_1_e;
+	6:	sprlay_oil_wells_1_f;
+	7:	sprlay_oil_wells_1_e;
+	8:	sprlay_oil_wells_1_d;
+	9:	sprlay_oil_wells_1_c;
+	10:	sprlay_oil_wells_1_b;
+	11:	sprlay_oil_wells_1_a;
+	12:	sprlay_oil_wells_1_b;
+	13:	sprlay_oil_wells_1_c;
+	14:	sprlay_oil_wells_1_d;
+	15:	sprlay_oil_wells_1_e;
+	16:	sprlay_oil_wells_1_f;
+	17:	sprlay_oil_wells_1_e;
+	18:	sprlay_oil_wells_1_d;
+	19:	sprlay_oil_wells_1_c;
+	20:	sprlay_oil_wells_1_b;
+	sprlay_oil_wells_1_a;
+}
+
+switch (FEAT_INDUSTRYTILES, SELF, oil_wells_tile_1_stop_anim, animation_frame) {
+	1: return 11; // jump to the 'stop animation cycle' when triggered and currently animated
+	2: return 12;
+	3: return 13;
+	4: return 14;
+	5: return 15;
+	6: return 16;
+	7: return 17;
+	8: return 18;
+	9: return 19;
+	10: return 20;
+	return CB_RESULT_DO_NOTHING;
+}
+switch (FEAT_INDUSTRYTILES, SELF, oil_wells_tile_1_start_anim, animation_frame) {
+	11: return 1;
+	12: return 2;
+	13: return 3;
+	14: return 4;
+	15: return 5;
+	16: return 6;
+	17: return 7;
+	18: return 8;
+	19: return 9;
+	20: return 10;
+	return CB_RESULT_START_ANIMATION;
+}
+
+random_switch (FEAT_INDUSTRYTILES, SELF, oil_wells_tile_1_random_anim_trigger_switch, bitmask(TRIGGER_INDUSTRYTILE_TILELOOP)) {
+	1: return oil_wells_tile_1_stop_anim;
+	1: return oil_wells_tile_1_start_anim;
+}
+
+switch (FEAT_INDUSTRYTILES, SELF, oil_wells_tile_1_next_frame_switch, animation_frame) {
+	10: return 1;
+	11: return CB_RESULT_STOP_ANIMATION; // Don't actually stop animation, just keep looping the same frame over and over. // CB_RESULT_STOP_ANIMATION
+	20: return 11;
+	return CB_RESULT_NEXT_FRAME;
+}
+
+switch (FEAT_INDUSTRYTILES, SELF, oil_wells_tile_1_graphics_switch, construction_state) {
+	1: sprlay_oil_wells_1_a;
+	2: sprlay_oil_wells_1_a;
+	oil_wells_tile_animation;
+}
+item (FEAT_INDUSTRYTILES, ind_tile_oil_wells) {
+property {
+	substitute:				02; 
+	animation_info:			[ANIMATION_LOOPING, 20];
+	animation_speed:		3;
+	animation_triggers:		bitmask(ANIM_TRIGGER_INDTILE_TILE_LOOP);
+	special_flags:			bitmask(INDTILE_FLAG_RANDOM_ANIMATION);
+	land_shape_flags:		bitmask(LSF_ONLY_ON_FLAT_LAND);
+    accepted_cargos:        [[PASS, 8]];
+}
+graphics {
+	anim_control: oil_wells_tile_1_random_anim_trigger_switch;
+	anim_next_frame: oil_wells_tile_1_next_frame_switch;
+	random_trigger: oil_wells_tile_1_random_anim_trigger_switch;
+		oil_wells_tile_1_graphics_switch;
+}}
+
+tilelayout industry_layout_oil_wells_1 {
+	0,0:	ind_tile_oil_wells;		0,2:	ind_tile_oil_wells;		0,4:	ind_tile_oil_wells;
+	2,0:	ind_tile_oil_wells;		2,2:	ind_tile_oil_wells;		2,4:	ind_tile_oil_wells;
+}
+
+tilelayout industry_layout_oil_wells_2 {
+	0,0:	ind_tile_oil_wells;		0,2:	ind_tile_oil_wells;	
+	2,0:	ind_tile_oil_wells;		2,2:	ind_tile_oil_wells;
+	4,0:	ind_tile_oil_wells;		4,2:	ind_tile_oil_wells;
+}
+
+produce (produce_oil_wells,
+    [],                                        // consume
+    [OIL_: LOAD_TEMP(1); PASS: LOAD_TEMP(2);], // produce
+    0                                          // don't run callback again
+)
+
+/* Calculate Oil and passenger production */
+switch (FEAT_INDUSTRIES, SELF, switch_produce_oil_wells, [
+    STORE_TEMP(GetPrimaryProduction(), 1),
+    STORE_TEMP((((LOAD_TEMP(1) / 4) * transported_last_month_pct("OIL_")) / 100), 2)
+    ]) {produce_oil_wells;}
+
+/* Location check */
+switch (FEAT_INDUSTRIES, SELF, loc_check_oil_wells, IsTown() && IsInQuadrantS() && IndustryElevationCheck(0, 4)) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_PRIMARY);}
+
+item (FEAT_INDUSTRIES, industry_oil_wells, 8) {
+	property {
+		substitute: INDUSTRYTYPE_OIL_WELLS;
+		life_type: IND_LIFE_TYPE_EXTRACTIVE;
+		cargo_types: [
+			produce_cargo("OIL_", 0),
+             produce_cargo("PASS", 0),
+		];
+		name: TTD_STR_INDUSTRY_NAME_OIL_WELLS;
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_NAME_OIL_WELLS));
+        prob_map_gen: 1;
+        prob_in_game: 0;
+		fund_cost_multiplier: 255;
+		layouts: [
+            industry_layout_oil_wells_1,
+            industry_layout_oil_wells_2,
+        ];
+		map_colour: 152;
+		spec_flags: 0;
+	}
+	graphics {
+		extra_text_industry: StringGetPrimaryHelptext();
+        location_check: loc_check_oil_wells;
+        produce_256_ticks: switch_produce_oil_wells;
+        /* Don't allow any production changes */
+		build_prod_change: 16; // 100% production
+		monthly_prod_change: CB_RESULT_IND_PROD_NO_CHANGE;
+		random_prod_change: CB_RESULT_IND_PROD_NO_CHANGE;
+	}
+}
+
+item (FEAT_OBJECTS, object_item_oil_wells_1) {
+	property {
+		class:					"HSIN";
+		classname:				string(STR_NAME_OBJECT_MENU);
+		name:					TTD_STR_INDUSTRY_NAME_OIL_WELLS;
+		climates_available:		ALL_CLIMATES;
+		object_flags:			bitmask(OBJ_FLAG_ANYTHING_REMOVE);
+		build_cost_multiplier:	0;
+		remove_cost_multiplier:	0;
+		size:					[1,1];
+		introduction_date:		1900;
+		num_views:				1;
+	}
+	graphics {
+		default:				sprlay_oil_wells_1_a;
+	}
+}
+
+/* *** End Oil Wells *** */

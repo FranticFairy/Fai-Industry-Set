@@ -1,0 +1,1019 @@
+# 1 "FITI.pnml"
+# 1 "src/header.nml" 1
+grf {
+	grfid: "TT\04\01";
+	name: string(STR_GRF_NAME);
+	desc: string(STR_GRF_DESC);
+	version: 27;
+	min_compatible_version: 23;
+
+    param 0 {
+		param_primary_quadrants {
+			type: bool;
+			name: string(STR_PARAM_PRIMARY_QUADRANTS_NAME);
+			desc: string(STR_PARAM_PRIMARY_QUADRANTS_DESC);
+			def_value: 1;
+		}
+	}
+}
+
+/* Disable base game industries */
+disable_item(FEAT_INDUSTRIES);
+
+/* Disable base game cargos */
+disable_item(FEAT_CARGOS);
+# 1 "FITI.pnml" 1
+# 1 "src/cargos.nml" 1
+cargotable {
+PASS,
+COAL,
+MAIL,
+OIL_,
+FISH,
+GOOD,
+GRAI,
+WOOD,
+IORE,
+STEL,
+COKE,
+WDPR,
+FOOD,
+FRUT,
+PETR,
+MILK,
+CLAY,
+SLAG,
+SAND,
+LVST,
+WOOL,
+METL,
+BDMT
+}
+
+	spriteset(cargoicon_PASS) { [10 + 20 * 0, 10 + 20 * 0, 10, 10, 0, 0, "gfx/other/cargoicons.png"]}
+	spriteset(cargoicon_COAL) { [10 + 20 * 1, 10 + 20 * 0, 10, 10, 0, 0, "gfx/other/cargoicons.png"]}
+	spriteset(cargoicon_MAIL) { [10 + 20 * 2, 10 + 20 * 0, 10, 10, 0, 0, "gfx/other/cargoicons.png"]}
+	spriteset(cargoicon_OIL_) { [10 + 20 * 3, 10 + 20 * 0, 10, 10, 0, 0, "gfx/other/cargoicons.png"]}
+	spriteset(cargoicon_FISH) { [10 + 20 * 4, 10 + 20 * 0, 10, 10, 0, 0, "gfx/other/cargoicons.png"]}
+	spriteset(cargoicon_GOOD) { [10 + 20 * 5, 10 + 20 * 0, 10, 10, 0, 0, "gfx/other/cargoicons.png"]}
+	spriteset(cargoicon_GRAI) { [10 + 20 * 6, 10 + 20 * 0, 10, 10, 0, 0, "gfx/other/cargoicons.png"]}
+	spriteset(cargoicon_WOOD) { [10 + 20 * 7, 10 + 20 * 0, 10, 10, 0, 0, "gfx/other/cargoicons.png"]}
+	spriteset(cargoicon_FRUT) { [10 + 20 * 8, 10 + 20 * 0, 10, 10, 0, 0, "gfx/other/cargoicons.png"]}
+	spriteset(cargoicon_PETR) { [10 + 20 * 9, 10 + 20 * 0, 10, 10, 0, 0, "gfx/other/cargoicons.png"]}
+							  
+	spriteset(cargoicon_MILK) { [10 + 20 * 0, 10 + 20 * 1, 10, 10, 0, 0, "gfx/other/cargoicons.png"]}
+	spriteset(cargoicon_CLAY) { [10 + 20 * 1, 10 + 20 * 1, 10, 10, 0, 0, "gfx/other/cargoicons.png"]}
+	spriteset(cargoicon_SLAG) { [10 + 20 * 2, 10 + 20 * 1, 10, 10, 0, 0, ANIM, "gfx/other/cargoicons.png"]}
+	spriteset(cargoicon_SAND) { [10 + 20 * 3, 10 + 20 * 1, 10, 10, 0, 0, "gfx/other/cargoicons.png"]}
+	spriteset(cargoicon_LVST) { [10 + 20 * 4, 10 + 20 * 1, 10, 10, 0, 0, "gfx/other/cargoicons.png"]}
+	spriteset(cargoicon_WOOL) { [10 + 20 * 5, 10 + 20 * 1, 10, 10, 0, 0, "gfx/other/cargoicons.png"]}
+	spriteset(cargoicon_IORE) { [10 + 20 * 6, 10 + 20 * 1, 10, 10, 0, 0, "gfx/other/cargoicons.png"]}
+	spriteset(cargoicon_STEL) { [10 + 20 * 7, 10 + 20 * 1, 10, 10, 0, 0, "gfx/other/cargoicons.png"]}
+	spriteset(cargoicon_WDPR) { [10 + 20 * 8, 10 + 20 * 1, 10, 10, 0, 0, "gfx/other/cargoicons.png"]}
+	spriteset(cargoicon_FOOD) { [10 + 20 * 9, 10 + 20 * 1, 10, 10, 0, 0, "gfx/other/cargoicons.png"]}
+							  
+	spriteset(cargoicon_METL) { [10 + 20 * 0, 10 + 20 * 2, 10, 10, 0, 0, "gfx/other/cargoicons.png"]}
+	spriteset(cargoicon_BDMT) { [10 + 20 * 1, 10 + 20 * 2, 10, 10, 0, 0, "gfx/other/cargoicons.png"]}
+	spriteset(cargoicon_VEHI) { [10 + 20 * 2, 10 + 20 * 2, 10, 10, 0, 0, "gfx/other/cargoicons.png"]}
+	spriteset(cargoicon_COKE) { [10 + 20 * 3, 10 + 20 * 2, 10, 10, 0, 0, "gfx/other/cargoicons.png"]}
+	spriteset(cargoicon_BOOM) { [10 + 20 * 4, 10 + 20 * 2, 10, 10, 0, 0, ANIM, "gfx/other/cargoicons.png"]}
+	spriteset(cargoicon_RFPR) { [10 + 20 * 5, 10 + 20 * 2, 10, 10, 0, 0, "gfx/other/cargoicons.png"]}
+	
+//Passengers
+    item(FEAT_CARGOS, PASS, 0) {
+        property {
+            number: 0;
+            type_name: string(STR_CARGO_PLURAL_PASS);
+            unit_name: string(STR_CARGO_SINGULAR_PASS);
+            type_abbreviation: string(STR_CARGO_ABBREV_PASS);
+            sprite: NEW_CARGO_SPRITE;
+            weight: 0.0625;
+            station_list_colour: 152;
+            cargo_payment_list_colour: 152;
+            is_freight: 0;
+            cargo_classes: bitmask(CC_PASSENGERS);
+            cargo_label: PASS;
+            town_growth_effect: TOWNGROWTH_PASSENGERS;
+            town_growth_multiplier: 1;
+            units_of_cargo: TTD_STR_PASSENGERS;
+            items_of_cargo: TTD_STR_QUANTITY_PASSENGERS;
+            penalty_lowerbound: 0;
+            single_penalty_length: 22;
+            price_factor: 137;
+            capacity_multiplier: 4;
+        }
+        graphics {
+            cargoicon_PASS;
+        }
+    }
+
+//Coal
+    item(FEAT_CARGOS, COAL, 1) {
+        property {
+            number: 1;
+            type_name: string(STR_CARGO_PLURAL_COAL);
+            unit_name: string(STR_CARGO_SINGULAR_COAL);
+            type_abbreviation: string(STR_CARGO_ABBREV_COAL);
+            sprite: NEW_CARGO_SPRITE;
+            weight: 1;
+            station_list_colour: 5;
+            cargo_payment_list_colour: 5;
+            is_freight: 1;
+            cargo_classes: bitmask(CC_BULK);
+            cargo_label: COAL;
+            town_growth_effect: TOWNGROWTH_NONE;
+            town_growth_multiplier: 1;
+            units_of_cargo: TTD_STR_TONS;
+            items_of_cargo: string(STR_CARGO_ITEM_COAL);
+            penalty_lowerbound: 40;
+            single_penalty_length: 255;
+            price_factor: 86;
+            capacity_multiplier: 1;
+        }
+        graphics {
+            cargoicon_COAL;
+        }
+    }
+
+//Mail
+    item(FEAT_CARGOS, MAIL, 2) {
+        property {
+            number: 2;
+            type_name: string(STR_CARGO_PLURAL_MAIL);
+            unit_name: string(STR_CARGO_SINGULAR_MAIL);
+            type_abbreviation: string(STR_CARGO_ABBREV_MAIL);
+            sprite: NEW_CARGO_SPRITE;
+            weight: 0.25;
+            station_list_colour: 15;
+            cargo_payment_list_colour: 15;
+            is_freight: 0;
+            cargo_classes: bitmask(CC_MAIL);
+            cargo_label: MAIL;
+            town_growth_effect: TOWNGROWTH_MAIL;
+            town_growth_multiplier: 1;
+            units_of_cargo: TTD_STR_BAGS;
+            items_of_cargo: TTD_STR_QUANTITY_MAIL;
+            penalty_lowerbound: 6;
+            single_penalty_length: 24;
+            price_factor: 167;
+            capacity_multiplier: 2;
+        }
+        graphics {
+            cargoicon_MAIL;
+        }
+    }
+
+//Oil
+    item(FEAT_CARGOS, OIL_, 3) {
+        property {
+            number: 3;
+            type_name: string(STR_CARGO_PLURAL_OIL_);
+            unit_name: string(STR_CARGO_SINGULAR_OIL_);
+            type_abbreviation: string(STR_CARGO_ABBREV_OIL_);
+            sprite: NEW_CARGO_SPRITE;
+            weight: 0.9;
+            station_list_colour: 1;
+            cargo_payment_list_colour: 1;
+            is_freight: 1;
+            cargo_classes: bitmask(CC_LIQUID);
+            cargo_label: OIL_;
+            town_growth_effect: TOWNGROWTH_NONE;
+            town_growth_multiplier: 1;
+            units_of_cargo: TTD_STR_LITERS;
+            items_of_cargo: string(STR_CARGO_ITEM_OIL_);
+            penalty_lowerbound: 30;
+            single_penalty_length: 255;
+            price_factor: 101;
+            capacity_multiplier: 1;
+        }
+        graphics {
+            cargoicon_OIL_;
+        }
+    }
+
+//Fish
+    item(FEAT_CARGOS, FISH, 4) {
+        property {
+            number: 4;
+            type_name: string(STR_CARGO_PLURAL_FISH);
+            unit_name: string(STR_CARGO_SINGULAR_FISH);
+            type_abbreviation: string(STR_CARGO_ABBREV_FISH);
+            sprite: NEW_CARGO_SPRITE;
+            weight: 1;
+            station_list_colour: 149;
+            cargo_payment_list_colour: 149;
+            is_freight: 1;
+            cargo_classes: bitmask(CC_EXPRESS, CC_REFRIGERATED);
+            cargo_label: FISH;
+            town_growth_effect: TOWNGROWTH_NONE;
+            town_growth_multiplier: 1;
+            units_of_cargo: TTD_STR_TONS;
+            items_of_cargo: string(STR_CARGO_ITEM_FISH);
+            penalty_lowerbound: 0;
+            single_penalty_length: 18;
+            price_factor: 134;
+            capacity_multiplier: 1;
+        }
+        graphics {
+            cargoicon_FISH;
+        }
+    }
+
+//Goods
+    item(FEAT_CARGOS, GOOD, 5) {
+        property {
+            number: 5;
+            type_name: string(STR_CARGO_PLURAL_GOOD);
+            unit_name: string(STR_CARGO_SINGULAR_GOOD);
+            type_abbreviation: string(STR_CARGO_ABBREV_GOOD);
+            sprite: NEW_CARGO_SPRITE;
+            weight: 0.5;
+            station_list_colour: 194;
+            cargo_payment_list_colour: 194;
+            is_freight: 1;
+            cargo_classes: bitmask(CC_EXPRESS);
+            cargo_label: GOOD;
+            town_growth_effect: TOWNGROWTH_NONE;
+            town_growth_multiplier: 1;
+            units_of_cargo: TTD_STR_CRATES;
+            items_of_cargo: string(STR_CARGO_ITEM_GOOD);
+            penalty_lowerbound: 10;
+            single_penalty_length: 56;
+            price_factor: 169;
+            capacity_multiplier: 2;
+        }
+        graphics {
+            cargoicon_GOOD;
+        }
+    }
+
+//Grain
+    item(FEAT_CARGOS, GRAI, 6) {
+        property {
+            number: 6;
+            type_name: string(STR_CARGO_PLURAL_GRAI);
+            unit_name: string(STR_CARGO_SINGULAR_GRAI);
+            type_abbreviation: string(STR_CARGO_ABBREV_GRAI);
+            sprite: NEW_CARGO_SPRITE;
+            weight: 1;
+            station_list_colour: 186;
+            cargo_payment_list_colour: 186;
+            is_freight: 1;
+            cargo_classes: bitmask(CC_BULK, CC_COVERED);
+            cargo_label: GRAI;
+            town_growth_effect: TOWNGROWTH_NONE;
+            town_growth_multiplier: 1;
+            units_of_cargo: TTD_STR_TONS;
+            items_of_cargo: string(STR_CARGO_ITEM_GRAI);
+            penalty_lowerbound: 4;
+            single_penalty_length: 40;
+            price_factor: 114;
+            capacity_multiplier: 1;
+        }
+        graphics {
+            cargoicon_GRAI;
+        }
+    }
+
+//Wood
+    item(FEAT_CARGOS, WOOD, 7) {
+        property {
+            number: 7;
+            type_name: string(STR_CARGO_PLURAL_WOOD);
+            unit_name: string(STR_CARGO_SINGULAR_WOOD);
+            type_abbreviation: string(STR_CARGO_ABBREV_WOOD);
+            sprite: NEW_CARGO_SPRITE;
+            weight: 1;
+            station_list_colour: 53;
+            cargo_payment_list_colour: 53;
+            is_freight: 1;
+            cargo_classes: bitmask(CC_PIECE_GOODS);
+            cargo_label: WOOD;
+            town_growth_effect: TOWNGROWTH_NONE;
+            town_growth_multiplier: 1;
+            units_of_cargo: TTD_STR_TONS;
+            items_of_cargo: string(STR_CARGO_ITEM_WOOD);
+            penalty_lowerbound: 24;
+            single_penalty_length: 255;
+            price_factor: 104;
+            capacity_multiplier: 1;
+        }
+        graphics {
+            cargoicon_WOOD;
+        }
+    }
+
+//Iron Ore
+    item(FEAT_CARGOS, IORE, 8) {
+        property {
+            number: 8;
+            type_name: string(STR_CARGO_PLURAL_IORE);
+            unit_name: string(STR_CARGO_SINGULAR_IORE);
+            type_abbreviation: string(STR_CARGO_ABBREV_IORE);
+            sprite: NEW_CARGO_SPRITE;
+            weight: 1;
+            station_list_colour: 20;
+            cargo_payment_list_colour: 20;
+            is_freight: 1;
+            cargo_classes: bitmask(CC_BULK);
+            cargo_label: IORE;
+            town_growth_effect: TOWNGROWTH_NONE;
+            town_growth_multiplier: 1;
+            units_of_cargo: TTD_STR_TONS;
+            items_of_cargo: string(STR_CARGO_ITEM_IORE);
+            penalty_lowerbound: 40;
+            single_penalty_length: 255;
+            price_factor: 90;
+            capacity_multiplier: 1;
+        }
+        graphics {
+            cargoicon_IORE;
+        }
+    }
+
+//Steel
+    item(FEAT_CARGOS, STEL, 9) {
+        property {
+            number: 9;
+            type_name: string(STR_CARGO_PLURAL_STEL);
+            unit_name: string(STR_CARGO_SINGULAR_STEL);
+            type_abbreviation: string(STR_CARGO_ABBREV_STEL);
+            sprite: NEW_CARGO_SPRITE;
+            weight: 1;
+            station_list_colour: 55;
+            cargo_payment_list_colour: 55;
+            is_freight: 1;
+            cargo_classes: bitmask(CC_PIECE_GOODS);
+            cargo_label: STEL;
+            town_growth_effect: TOWNGROWTH_NONE;
+            town_growth_multiplier: 1;
+            units_of_cargo: TTD_STR_TONS;
+            items_of_cargo: string(STR_CARGO_ITEM_STEL);
+            penalty_lowerbound: 14;
+            single_penalty_length: 255;
+            price_factor: 127;
+            capacity_multiplier: 1;
+        }
+        graphics {
+            cargoicon_STEL;
+        }
+    }
+
+//Coal Coke
+    item(FEAT_CARGOS, COKE, 10) {
+        property {
+            number: 10;
+            type_name: string(STR_CARGO_PLURAL_COKE);
+            unit_name: string(STR_CARGO_SINGULAR_COKE);
+            type_abbreviation: string(STR_CARGO_ABBREV_COKE);
+            sprite: NEW_CARGO_SPRITE;
+            weight: 1;
+            station_list_colour: 38;
+            cargo_payment_list_colour: 38;
+            is_freight: 1;
+            cargo_classes: bitmask(CC_BULK);
+            cargo_label: COKE;
+            town_growth_effect: TOWNGROWTH_NONE;
+            town_growth_multiplier: 1;
+            units_of_cargo: TTD_STR_TONS;
+            items_of_cargo: string(STR_CARGO_ITEM_COKE);
+            penalty_lowerbound: 30;
+            single_penalty_length: 255;
+            price_factor: 97;
+            capacity_multiplier: 1;
+        }
+        graphics {
+            cargoicon_COKE;
+        }
+    }
+
+//Lumber
+    item(FEAT_CARGOS, WDPR, 11) {
+        property {
+            number: 11;
+            type_name: string(STR_CARGO_PLURAL_WDPR);
+            unit_name: string(STR_CARGO_SINGULAR_WDPR);
+            type_abbreviation: string(STR_CARGO_ABBREV_WDPR);
+            sprite: NEW_CARGO_SPRITE;
+            weight: 1;
+            station_list_colour: 58;
+            cargo_payment_list_colour: 58;
+            is_freight: 1;
+            cargo_classes: bitmask(CC_BULK, CC_PIECE_GOODS);
+            cargo_label: WDPR;
+            town_growth_effect: TOWNGROWTH_NONE;
+            town_growth_multiplier: 1;
+            units_of_cargo: TTD_STR_TONS;
+            items_of_cargo: string(STR_CARGO_ITEM_WDPR);
+            penalty_lowerbound: 18;
+            single_penalty_length: 255;
+            price_factor: 117;
+            capacity_multiplier: 1;
+        }
+        graphics {
+            cargoicon_WDPR;
+        }
+    }
+
+//Food
+    item(FEAT_CARGOS, FOOD, 12) {
+        property {
+            number: 12;
+            type_name: string(STR_CARGO_PLURAL_FOOD);
+            unit_name: string(STR_CARGO_SINGULAR_FOOD);
+            type_abbreviation: string(STR_CARGO_ABBREV_FOOD);
+            sprite: NEW_CARGO_SPRITE;
+            weight: 1;
+            station_list_colour: 48;
+            cargo_payment_list_colour: 48;
+            is_freight: 1;
+            cargo_classes: bitmask(CC_EXPRESS, CC_PIECE_GOODS, CC_REFRIGERATED);
+            cargo_label: FOOD;
+            town_growth_effect: TOWNGROWTH_NONE;
+            town_growth_multiplier: 1;
+            units_of_cargo: TTD_STR_TONS;
+            items_of_cargo: string(STR_CARGO_ITEM_FOOD);
+            penalty_lowerbound: 0;
+            single_penalty_length: 20;
+            price_factor: 168;
+            capacity_multiplier: 1;
+        }
+        graphics {
+            cargoicon_FOOD;
+        }
+    }
+
+//Fruit
+    item(FEAT_CARGOS, FRUT, 13) {
+        property {
+            number: 13;
+            type_name: string(STR_CARGO_PLURAL_FRUT);
+            unit_name: string(STR_CARGO_SINGULAR_FRUT);
+            type_abbreviation: string(STR_CARGO_ABBREV_FRUT);
+            sprite: NEW_CARGO_SPRITE;
+            weight: 1;
+            station_list_colour: 82;
+            cargo_payment_list_colour: 82;
+            is_freight: 1;
+            cargo_classes: bitmask(CC_EXPRESS, CC_PIECE_GOODS, CC_REFRIGERATED);
+            cargo_label: FRUT;
+            town_growth_effect: TOWNGROWTH_NONE;
+            town_growth_multiplier: 1;
+            units_of_cargo: TTD_STR_TONS;
+            items_of_cargo: string(STR_CARGO_ITEM_FRUT);
+            penalty_lowerbound: 0;
+            single_penalty_length: 26;
+            price_factor: 124;
+            capacity_multiplier: 1;
+        }
+        graphics {
+            cargoicon_FRUT;
+        }
+    }
+
+//Fuel Oil
+    item(FEAT_CARGOS, PETR, 14) {
+        property {
+            number: 14;
+            type_name: string(STR_CARGO_PLURAL_PETR);
+            unit_name: string(STR_CARGO_SINGULAR_PETR);
+            type_abbreviation: string(STR_CARGO_ABBREV_PETR);
+            sprite: NEW_CARGO_SPRITE;
+            weight: 0.8;
+            station_list_colour: 175;
+            cargo_payment_list_colour: 175;
+            is_freight: 1;
+            cargo_classes: bitmask(CC_LIQUID);
+            cargo_label: PETR;
+            town_growth_effect: TOWNGROWTH_NONE;
+            town_growth_multiplier: 1;
+            units_of_cargo: TTD_STR_LITERS;
+            items_of_cargo: string(STR_CARGO_ITEM_PETR);
+            penalty_lowerbound: 18;
+            single_penalty_length: 255;
+            price_factor: 145;
+            capacity_multiplier: 1;
+        }
+        graphics {
+            cargoicon_PETR;
+        }
+    }
+
+//Milk
+    item(FEAT_CARGOS, MILK, 15) {
+        property {
+            number: 15;
+            type_name: string(STR_CARGO_PLURAL_MILK);
+            unit_name: string(STR_CARGO_SINGULAR_MILK);
+            type_abbreviation: string(STR_CARGO_ABBREV_MILK);
+            sprite: NEW_CARGO_SPRITE;
+            weight: 1.1;
+            station_list_colour: 161;
+            cargo_payment_list_colour: 161;
+            is_freight: 1;
+            cargo_classes: bitmask(CC_EXPRESS, CC_LIQUID, CC_REFRIGERATED);
+            cargo_label: MILK;
+            town_growth_effect: TOWNGROWTH_NONE;
+            town_growth_multiplier: 1;
+            units_of_cargo: TTD_STR_LITERS;
+            items_of_cargo: string(STR_CARGO_ITEM_MILK);
+            penalty_lowerbound: 0;
+            single_penalty_length: 16;
+            price_factor: 131;
+            capacity_multiplier: 1;
+        }
+        graphics {
+            cargoicon_MILK;
+        }
+    }
+
+//Clay
+    item(FEAT_CARGOS, CLAY, 16) {
+        property {
+            number: 16;
+            type_name: string(STR_CARGO_PLURAL_CLAY);
+            unit_name: string(STR_CARGO_SINGULAR_CLAY);
+            type_abbreviation: string(STR_CARGO_ABBREV_CLAY);
+            sprite: NEW_CARGO_SPRITE;
+            weight: 1;
+            station_list_colour: 37;
+            cargo_payment_list_colour: 37;
+            is_freight: 1;
+            cargo_classes: bitmask(CC_BULK, CC_COVERED);
+            cargo_label: CLAY;
+            town_growth_effect: TOWNGROWTH_NONE;
+            town_growth_multiplier: 1;
+            units_of_cargo: TTD_STR_TONS;
+            items_of_cargo: string(STR_CARGO_ITEM_CLAY);
+            penalty_lowerbound: 30;
+            single_penalty_length: 255;
+            price_factor: 100;
+            capacity_multiplier: 1;
+        }
+        graphics {
+            cargoicon_CLAY;
+        }
+    }
+
+//Slag
+    item(FEAT_CARGOS, SLAG, 17) {
+        property {
+            number: 17;
+            type_name: string(STR_CARGO_PLURAL_SLAG);
+            unit_name: string(STR_CARGO_SINGULAR_SLAG);
+            type_abbreviation: string(STR_CARGO_ABBREV_SLAG);
+            sprite: NEW_CARGO_SPRITE;
+            weight: 1;
+            station_list_colour: 119;
+            cargo_payment_list_colour: 119;
+            is_freight: 1;
+            cargo_classes: bitmask(CC_BULK);
+            cargo_label: SLAG;
+            town_growth_effect: TOWNGROWTH_NONE;
+            town_growth_multiplier: 1;
+            units_of_cargo: TTD_STR_TONS;
+            items_of_cargo: string(STR_CARGO_ITEM_SLAG);
+            penalty_lowerbound: 64;
+            single_penalty_length: 255;
+            price_factor: 85;
+            capacity_multiplier: 1;
+        }
+        graphics {
+            cargoicon_SLAG;
+        }
+    }
+
+//Sand
+    item(FEAT_CARGOS, SAND, 18) {
+        property {
+            number: 18;
+            type_name: string(STR_CARGO_PLURAL_SAND);
+            unit_name: string(STR_CARGO_SINGULAR_SAND);
+            type_abbreviation: string(STR_CARGO_ABBREV_SAND);
+            sprite: NEW_CARGO_SPRITE;
+            weight: 1;
+            station_list_colour: 196;
+            cargo_payment_list_colour: 196;
+            is_freight: 1;
+            cargo_classes: bitmask(CC_BULK);
+            cargo_label: SAND;
+            town_growth_effect: TOWNGROWTH_NONE;
+            town_growth_multiplier: 1;
+            units_of_cargo: TTD_STR_TONS;
+            items_of_cargo: string(STR_CARGO_ITEM_SAND);
+            penalty_lowerbound: 64;
+            single_penalty_length: 255;
+            price_factor: 93;
+            capacity_multiplier: 1;
+        }
+        graphics {
+            cargoicon_SAND;
+        }
+    }
+
+//Livestock
+    item(FEAT_CARGOS, LVST, 19) {
+        property {
+            number: 19;
+            type_name: string(STR_CARGO_PLURAL_LVST);
+            unit_name: string(STR_CARGO_SINGULAR_LVST);
+            type_abbreviation: string(STR_CARGO_ABBREV_LVST);
+            sprite: NEW_CARGO_SPRITE;
+            weight: 0.3;
+            station_list_colour: 79;
+            cargo_payment_list_colour: 79;
+            is_freight: 1;
+            cargo_classes: bitmask(CC_PIECE_GOODS);
+            cargo_label: LVST;
+            town_growth_effect: TOWNGROWTH_NONE;
+            town_growth_multiplier: 1;
+            units_of_cargo: TTD_STR_ITEMS;
+            items_of_cargo: string(STR_CARGO_ITEM_LVST);
+            penalty_lowerbound: 0;
+            single_penalty_length: 15;
+            price_factor: 122;
+            capacity_multiplier: 1;
+        }
+        graphics {
+            cargoicon_LVST;
+        }
+    }
+
+//Wool
+    item(FEAT_CARGOS, WOOL, 20) {
+        property {
+            number: 20;
+            type_name: string(STR_CARGO_PLURAL_WOOL);
+            unit_name: string(STR_CARGO_SINGULAR_WOOL);
+            type_abbreviation: string(STR_CARGO_ABBREV_WOOL);
+            sprite: NEW_CARGO_SPRITE;
+            weight: 0.2;
+            station_list_colour: 135;
+            cargo_payment_list_colour: 135;
+            is_freight: 1;
+            cargo_classes: bitmask(CC_PIECE_GOODS, CC_COVERED);
+            cargo_label: WOOL;
+            town_growth_effect: TOWNGROWTH_NONE;
+            town_growth_multiplier: 1;
+            units_of_cargo: TTD_STR_TONS;
+            items_of_cargo: string(STR_CARGO_ITEM_WOOL);
+            penalty_lowerbound: 8;
+            single_penalty_length: 48;
+            price_factor: 111;
+            capacity_multiplier: 1;
+        }
+        graphics {
+            cargoicon_WOOL;
+        }
+    }
+
+//Cast Iron
+    item(FEAT_CARGOS, METL, 21) {
+        property {
+            number: 21;
+            type_name: string(STR_CARGO_PLURAL_METL);
+            unit_name: string(STR_CARGO_SINGULAR_METL);
+            type_abbreviation: string(STR_CARGO_ABBREV_METL);
+            sprite: NEW_CARGO_SPRITE;
+            weight: 1;
+            station_list_colour: 10;
+            cargo_payment_list_colour: 10;
+            is_freight: 1;
+            cargo_classes: bitmask(CC_PIECE_GOODS);
+            cargo_label: METL;
+            town_growth_effect: TOWNGROWTH_NONE;
+            town_growth_multiplier: 1;
+            units_of_cargo: TTD_STR_TONS;
+            items_of_cargo: string(STR_CARGO_ITEM_METL);
+            penalty_lowerbound: 7;
+            single_penalty_length: 255;
+            price_factor: 135;
+            capacity_multiplier: 1;
+        }
+        graphics {
+            cargoicon_METL;
+        }
+    }
+
+//Building Materials
+    item(FEAT_CARGOS, BDMT, 22) {
+        property {
+            number: 22;
+            type_name: string(STR_CARGO_PLURAL_BDMT);
+            unit_name: string(STR_CARGO_SINGULAR_BDMT);
+            type_abbreviation: string(STR_CARGO_ABBREV_BDMT);
+            sprite: NEW_CARGO_SPRITE;
+            weight: 1;
+            station_list_colour: 44;
+            cargo_payment_list_colour: 44;
+            is_freight: 1;
+            cargo_classes: bitmask(CC_BULK, CC_PIECE_GOODS);
+            cargo_label: BDMT;
+            town_growth_effect: TOWNGROWTH_NONE;
+            town_growth_multiplier: 1;
+            units_of_cargo: TTD_STR_TONS;
+            items_of_cargo: string(STR_CARGO_ITEM_BDMT);
+            penalty_lowerbound: 12;
+            single_penalty_length: 255;
+            price_factor: 133;
+            capacity_multiplier: 1;
+        }
+        graphics {
+            cargoicon_BDMT;
+        }
+    }
+
+# 1 "FITI.pnml" 1
+# 1 "src/functions.nml" 1
+
+/**
+ * Bypass location check requirements if the industry is being funded or if we're in Scenario Editor.
+ * @return 1 if the industry is being funded or we're in Scenario Editor, else 0 (the industry is being generated during map generation or during a game).
+ */
+switch (FEAT_INDUSTRIES, SELF, IsBeingFunded, (extra_callback_info2 == IND_CREATION_FUND || game_mode == GAMEMODE_EDITOR)) {return;}
+
+/**
+ * Check if a bank is facing a road.
+ * @return 1 if there are road tiles in front of the two bank tiles, else 0.
+ */
+switch (FEAT_INDUSTRIES, SELF, BankIsFacingRoad, (nearby_tile_class(0,1) == TILE_CLASS_ROAD) && nearby_tile_class(1,1) == TILE_CLASS_ROAD) {return;}
+
+/**
+ * Check if a secondary industry can be built in this city (because none already exist).
+ * Note: Banks are the exception and are really primary industries anyway.
+ * @return 1 if no secondary industries exist, else 0.
+ */
+switch (FEAT_INDUSTRIES, SELF, CityHasNoSecondaryIndustries, 
+    industry_town_count(industry_building_materials_factory) > 0 ||
+    industry_town_count(industry_factory) > 0 ||
+    industry_town_count(industry_food_processing_plant) > 0 ||
+    industry_town_count(industry_oil_refinery) > 0 ||
+    industry_town_count(industry_paper_mill) > 0 ||
+    industry_town_count(industry_recycling_center) > 0 ||
+    industry_town_count(industry_sawmill) > 0 ||
+    industry_town_count(industry_steel_mill) > 0
+    ) {1: return 0; return 1;}
+
+/**
+ * Check if there are any industries of a given type within a given distance.
+ * @return 1 if there are no industries of the given type within the required distance, else 0.
+ */
+ switch (FEAT_INDUSTRIES, SELF, NoNearbyCompetitors, industrytype, required_distance, industry_distance(industrytype) > required_distance) {return;}
+
+/**
+ * Helper function for IsWithinDistanceToTown()
+ * Note: The sum of the radii is greater than simply the largest radii, but it means larger towns have a greater range for industry placement.
+ * @returns the sum of the town's townzone radii. 
+ */
+switch (FEAT_INDUSTRIES, PARENT, StoreTownRadii,   town_zone_0_radius_square +
+                                                    town_zone_1_radius_square + 
+                                                    town_zone_2_radius_square + 
+                                                    town_zone_3_radius_square + 
+                                                    town_zone_4_radius_square) {return;}
+
+/**
+ * Checks the distance from an industry to its parent town.
+ * The townzone radii and Euclidean distance are both squared, so we need to sqaure the padding parameter to match.
+ * @param padding Area around the town where industries can spawn.
+ * @return 1 if the industry is within the given distance to the town, else 0.
+ */
+switch (FEAT_INDUSTRIES, SELF, IsWithinDistanceToTown, padding, (town_euclidean_dist(0,0) < ( (padding * padding) + StoreTownRadii()) ) ) {return;}
+
+/**
+ * Check if the industry is near a town - required for secondary industries.
+ * @return 1 if near a town, else 0.
+ */
+ switch (FEAT_INDUSTRIES, SELF, IsNearTown, IsWithinDistanceToTown(15)) {return;}
+
+/**
+ * Get a town's population.
+ * @return the population of the town.
+ */
+switch (FEAT_INDUSTRIES, PARENT, TownPopulation, population) {return;}
+
+/**
+ * Check if a town has a required population.
+ * @param required The required population.
+ * @return 1 if the town's population is over the given requirement, else 0.
+ */
+switch (FEAT_INDUSTRIES, SELF, TownHasPopulation, required, TownPopulation() > required) {return;}
+
+/**
+ * Get the adjusted production efficiency, where transporting 75% of possible passengers gives 100% production efficiency.
+ * @return The adjusted efficiency, from 0..100.
+ */
+switch (FEAT_INDUSTRIES, PARENT, GetAdjustedProductionEfficiency, percent_transported_passengers) {
+    0: return 0;
+    return min(percent_transported_passengers + 25, 100);
+}
+
+/**
+ * Get the secondary production level of a town, 1/5 the population divided by 8 production ticks per month, multiplied by the percentage of transported passengers.
+ * @return The production per 256 ticks.
+ */
+switch (FEAT_INDUSTRIES, SELF, GetSecondaryProductionLevel, (TownPopulation() / 5 / 8 * GetAdjustedProductionEfficiency()) / 100) {return;}
+
+/** 
+ * Get the primary industry population multiplier based on the population of the town. 
+ * @return The multiplier, in range 1-5.
+ */
+switch (FEAT_INDUSTRIES, PARENT, GetPopMultiplier, min(1 + (population / 1000), 5)) {return;}
+
+/**
+ * Get the primary industry production amount based on town population and percent of transported passengers.
+ * @return The amount to be produced every 256 ticks.
+ */
+switch (FEAT_INDUSTRIES, SELF, GetPrimaryProduction, (16 * 1 * 100) / 100) {return;}
+
+/**
+ * Choose the proper string for the next population goal for primary industry towns.
+ * @return The string ID for the chosen population goal helptext.
+ */
+switch (FEAT_INDUSTRIES, SELF, StringNextPrimaryProductionGoal, GetPopMultiplier()) {
+    1: return string(STR_PRIMARY_GOAL_1000);
+    2: return string(STR_PRIMARY_GOAL_2000);
+    3: return string(STR_PRIMARY_GOAL_3000);
+    4: return string(STR_PRIMARY_GOAL_4000);
+    return string(STR_PRIMARY_GOAL_MAX);
+}
+
+/**
+ * Choose the correct string for the helptext about transporting more passengers in town.
+ * @return The string ID for the correct helptext, either telling passengers to transport more, or to keep up the good work.
+ */
+switch (FEAT_INDUSTRIES, SELF, StringIncreaseProductionEfficiency, GetAdjustedProductionEfficiency()) {
+    0..99: return string(STR_PRIMARY_INCREASE_EFFICIENCY);
+    return string(STR_PRIMARY_MAX_EFFICIENCY);
+}
+
+/**
+ * Build text stack for primary industry helptext.
+ * @return The helptext string with substrings and values from the text stack.
+ */
+switch (FEAT_INDUSTRIES, SELF, StringGetPrimaryHelptext, [
+    STORE_TEMP(StringNextPrimaryProductionGoal() + 0xD000, 257),   // list the next population goal (or say we've reached it)
+    STORE_TEMP(GetAdjustedProductionEfficiency(), 258),   // current production efficiency
+    STORE_TEMP(StringIncreaseProductionEfficiency() + 0xD000, 259) // helptext to increase efficiency by transporting more passengers, if <100%, else an empty string
+]) {return string(STR_PRIMARY_HELPTEXT);}
+
+/**
+ * Build text stack for secondary industry helptext.
+ * @return The helptext string with substrings and values from the text stack.
+ */
+switch (FEAT_INDUSTRIES, SELF, StringGetSecondaryHelptext, [
+    STORE_TEMP(TownPopulation() / 5, 257),   // list the next population goal (or say we've reached it)
+    STORE_TEMP(GetAdjustedProductionEfficiency(), 258),   // current production efficiency
+    STORE_TEMP(StringIncreaseProductionEfficiency() + 0xD000, 259) // helptext to increase efficiency by transporting more passengers, if <100%, else an empty string
+]) {return string(STR_SECONDARY_HELPTEXT);}
+
+/**
+ * Is the parent town a city?
+ * @return True if it is a city, else false.
+ */
+switch (FEAT_INDUSTRIES, PARENT, IsCity, is_city) {return;}
+
+/**
+ * Is the parent town a town? (as oppposed to a city)
+ * @return True if it is a town, else false.
+ */
+ switch (FEAT_INDUSTRIES, PARENT, IsTown, !is_city) {return;}
+
+/**
+ * Check if an industry is within a range of elevation.
+ * @param min_z elevation (inclusive)
+ * @param max_z elevation (inclusive)
+ * @return 1 if the industry is at or between the specified min and max elevations, else 0
+ */
+switch (FEAT_INDUSTRIES, SELF, IndustryElevationCheck, min_z, max_z, nearby_tile_height(0,0) >= min_z && nearby_tile_height(0,0) <= max_z) {return;}
+
+/**
+ * Calculate the x coordinate of an industry's northernmost tile.
+ * @returns the x coordinate
+ */
+switch (FEAT_INDUSTRIES, SELF, GetTileX, var[0x80, 0, 0xFFFFFFFF] % map_x_edge) {return;}
+
+/**
+ * Calculate the y coordinate of an industry's northernmost tile.
+ * @returns the y coordinate
+ */
+switch (FEAT_INDUSTRIES, SELF, GetTileY, var[0x80, 0, 0xFFFFFFFF] / map_x_edge) {return;}
+
+ /**
+ * Check if an industry is in the North quadrant of the map.
+ * @return 1 if this is true, we're in Scenario Editor, or param_primary_quadrants disables this feature, else 0.
+ */
+switch (FEAT_INDUSTRIES, SELF, IsInQuadrantN,
+	!param_primary_quadrants || game_mode == GAMEMODE_EDITOR || (GetTileX() < (map_x_edge / 2) && GetTileY() < (map_y_edge / 2))
+) {return;}
+
+/**
+ * Check if an industry is in the East quadrant of the map.
+ * @return 1 if this is true, we're in Scenario Editor, or param_primary_quadrants disables this feature, else 0.
+ */
+switch (FEAT_INDUSTRIES, SELF, IsInQuadrantE,
+	!param_primary_quadrants || game_mode == GAMEMODE_EDITOR || (GetTileX() < (map_x_edge / 2) && GetTileY() > (map_y_edge / 2))
+) {return;}
+
+/**
+ * Check if an industry is in the South quadrant of the map.
+ * @return 1 if this is true, we're in Scenario Editor, or param_primary_quadrants disables this feature, else 0.
+ */
+switch (FEAT_INDUSTRIES, SELF, IsInQuadrantS,
+	!param_primary_quadrants || game_mode == GAMEMODE_EDITOR || (GetTileX() > (map_x_edge / 2) && GetTileY() > (map_y_edge / 2))
+) {return;}
+
+/**
+ * Check if an industry is in the West quadrant of the map.
+ * @return 1 if this is true, we're in Scenario Editor, or param_primary_quadrants disables this feature, else 0.
+ */
+switch (FEAT_INDUSTRIES, SELF, IsInQuadrantW,
+	!param_primary_quadrants || game_mode == GAMEMODE_EDITOR || (GetTileX() > (map_x_edge / 2) && GetTileY() < (map_y_edge / 2))
+) {return;}
+
+/**
+ * Check if an industry is in the Northeast quadrant of the map.
+ * @return 1 if this is true, we're in Scenario Editor, or param_primary_quadrants disables this feature, else 0. 
+ */
+switch (FEAT_INDUSTRIES, SELF, IsInQuadrantNE,
+    !param_primary_quadrants || game_mode == GAMEMODE_EDITOR || ((GetTileX() * map_y_edge) < (GetTileY() * map_x_edge)) && ((GetTileX() * map_y_edge + GetTileY() * map_x_edge) < (map_x_edge * map_y_edge))
+) {return;}
+
+/**
+ * Check if an industry is in the Southeast quadrant of the map.
+ * @return 1 if this is true, we're in Scenario Editor, or param_primary_quadrants disables this feature, else 0. 
+ */
+switch (FEAT_INDUSTRIES, SELF, IsInQuadrantSE,
+    !param_primary_quadrants || game_mode == GAMEMODE_EDITOR || ((GetTileX() * map_y_edge) < (GetTileY() * map_x_edge)) && ((GetTileX() * map_y_edge + GetTileY() * map_x_edge) > (map_x_edge * map_y_edge))
+) {return;}
+
+/**
+ * Check if an industry is in the Southwest quadrant of the map.
+ * @return 1 if this is true, we're in Scenario Editor, or param_primary_quadrants disables this feature, else 0. 
+ */
+switch (FEAT_INDUSTRIES, SELF, IsInQuadrantSW,
+    !param_primary_quadrants || game_mode == GAMEMODE_EDITOR || ((GetTileX() * map_y_edge) > (GetTileY() * map_x_edge)) && ((GetTileX() * map_y_edge + GetTileY() * map_x_edge) > (map_x_edge * map_y_edge))
+) {return;}
+
+/**
+ * Check if an industry is in the Northwest quadrant of the map.
+ * @return 1 if this is true, we're in Scenario Editor, or param_primary_quadrants disables this feature, else 0. 
+ */
+switch (FEAT_INDUSTRIES, SELF, IsInQuadrantNW,
+    !param_primary_quadrants || game_mode == GAMEMODE_EDITOR || ((GetTileX() * map_y_edge) > (GetTileY() * map_x_edge)) && ((GetTileX() * map_y_edge + GetTileY() * map_x_edge) < (map_x_edge * map_y_edge))
+) {return;}
+
+/* Empty production block. */
+produce (produce_none, [], [])
+# 1 "FITI.pnml" 1
+
+# 1 "src/coal_mine.nml" 1
+
+/* *** Begin Coal Mine *** */
+
+spritelayout sprlay_coal_mine_6 {
+	ground		{sprite:2022;}
+}
+
+item (FEAT_INDUSTRYTILES, ind_tile_coal_mine_1) { // hoist
+property {
+	substitute:         02;
+	land_shape_flags:    bitmask(LSF_ONLY_ON_FLAT_LAND);
+	special_flags: bitmask(INDTILE_FLAG_ACCEPT_ALL);
+}
+graphics {
+	default:			sprlay_coal_mine_6;
+}}
+
+tilelayout industry_layout_coal_mine {
+	0,0:	ind_tile_coal_mine_1;	0,1:	ind_tile_coal_mine_1;	0,2:	ind_tile_coal_mine_1;	0,3:	ind_tile_coal_mine_1;
+	1,0:	ind_tile_coal_mine_1;	1,1:	ind_tile_coal_mine_1;	1,2:	ind_tile_coal_mine_1;	1,3:	ind_tile_coal_mine_1;
+	2,0:	ind_tile_coal_mine_1;	2,1:	ind_tile_coal_mine_1;	2,2:	ind_tile_coal_mine_1;	2,3:	ind_tile_coal_mine_1;
+}
+
+/* Location check */
+switch (FEAT_INDUSTRIES, SELF, loc_check_coal_mine, IsTown() && IsInQuadrantN() && IndustryElevationCheck(4,255)) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_PRIMARY);}
+
+/* Coal Mine industry */
+item (FEAT_INDUSTRIES, industry_coal_mine, 0) {
+	property {
+        substitute: 0;
+        override: 0;
+		life_type: IND_LIFE_TYPE_EXTRACTIVE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("COAL",15),];
+		name: string(STR_INDUSTRY_COAL_MINE);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_COAL_MINE));
+        prob_map_gen: 2; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 255;
+		layouts: [
+			industry_layout_coal_mine,
+		];
+	}
+	graphics {
+        location_check: loc_check_coal_mine;
+	}
+}
+
+/* *** End Coal Mine *** */
+# 1 "FITI.pnml" 1
