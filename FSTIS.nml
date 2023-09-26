@@ -78,6 +78,8 @@ BDMT
 	spriteset(cargoicon_COKE) { [10 + 20 * 3, 10 + 20 * 2, 10, 10, 0, 0, "gfx/other/cargoicons.png"]}
 	spriteset(cargoicon_BOOM) { [10 + 20 * 4, 10 + 20 * 2, 10, 10, 0, 0, ANIM, "gfx/other/cargoicons.png"]}
 	spriteset(cargoicon_RFPR) { [10 + 20 * 5, 10 + 20 * 2, 10, 10, 0, 0, "gfx/other/cargoicons.png"]}
+	spriteset(cargoicon_FMSP) { [10 + 20 * 6, 10 + 20 * 2, 10, 10, 0, 0, "gfx/other/cargoicons.png"]}
+	spriteset(cargoicon_ENSP) { [10 + 20 * 7, 10 + 20 * 2, 10, 10, 0, 0, "gfx/other/cargoicons.png"]}
 	
 //Passengers
     item(FEAT_CARGOS, PASS, 0) {
@@ -92,7 +94,7 @@ BDMT
             cargo_payment_list_colour: 152;
             is_freight: 0;
             cargo_classes: bitmask(CC_PASSENGERS);
-            cargo_label: PASS;
+            cargo_label: "PASS";
             town_growth_effect: TOWNGROWTH_PASSENGERS;
             town_growth_multiplier: 1;
             units_of_cargo: TTD_STR_PASSENGERS;
@@ -120,7 +122,7 @@ BDMT
             cargo_payment_list_colour: 5;
             is_freight: 1;
             cargo_classes: bitmask(CC_BULK);
-            cargo_label: COAL;
+            cargo_label: "COAL";
             town_growth_effect: TOWNGROWTH_NONE;
             town_growth_multiplier: 1;
             units_of_cargo: TTD_STR_TONS;
@@ -148,7 +150,7 @@ BDMT
             cargo_payment_list_colour: 15;
             is_freight: 0;
             cargo_classes: bitmask(CC_MAIL);
-            cargo_label: MAIL;
+            cargo_label: "MAIL";
             town_growth_effect: TOWNGROWTH_MAIL;
             town_growth_multiplier: 1;
             units_of_cargo: TTD_STR_BAGS;
@@ -176,7 +178,7 @@ BDMT
             cargo_payment_list_colour: 1;
             is_freight: 1;
             cargo_classes: bitmask(CC_LIQUID);
-            cargo_label: OIL_;
+            cargo_label: "OIL_";
             town_growth_effect: TOWNGROWTH_NONE;
             town_growth_multiplier: 1;
             units_of_cargo: TTD_STR_LITERS;
@@ -204,7 +206,7 @@ BDMT
             cargo_payment_list_colour: 149;
             is_freight: 1;
             cargo_classes: bitmask(CC_EXPRESS, CC_REFRIGERATED);
-            cargo_label: FISH;
+            cargo_label: "FISH";
             town_growth_effect: TOWNGROWTH_NONE;
             town_growth_multiplier: 1;
             units_of_cargo: TTD_STR_TONS;
@@ -232,7 +234,7 @@ BDMT
             cargo_payment_list_colour: 194;
             is_freight: 1;
             cargo_classes: bitmask(CC_EXPRESS);
-            cargo_label: GOOD;
+            cargo_label: "GOOD";
             town_growth_effect: TOWNGROWTH_NONE;
             town_growth_multiplier: 1;
             units_of_cargo: TTD_STR_CRATES;
@@ -260,7 +262,7 @@ BDMT
             cargo_payment_list_colour: 186;
             is_freight: 1;
             cargo_classes: bitmask(CC_BULK, CC_COVERED);
-            cargo_label: GRAI;
+            cargo_label: "GRAI";
             town_growth_effect: TOWNGROWTH_NONE;
             town_growth_multiplier: 1;
             units_of_cargo: TTD_STR_TONS;
@@ -288,7 +290,7 @@ BDMT
             cargo_payment_list_colour: 53;
             is_freight: 1;
             cargo_classes: bitmask(CC_PIECE_GOODS);
-            cargo_label: WOOD;
+            cargo_label: "WOOD";
             town_growth_effect: TOWNGROWTH_NONE;
             town_growth_multiplier: 1;
             units_of_cargo: TTD_STR_TONS;
@@ -316,7 +318,7 @@ BDMT
             cargo_payment_list_colour: 20;
             is_freight: 1;
             cargo_classes: bitmask(CC_BULK);
-            cargo_label: IORE;
+            cargo_label: "IORE";
             town_growth_effect: TOWNGROWTH_NONE;
             town_growth_multiplier: 1;
             units_of_cargo: TTD_STR_TONS;
@@ -344,7 +346,7 @@ BDMT
             cargo_payment_list_colour: 55;
             is_freight: 1;
             cargo_classes: bitmask(CC_PIECE_GOODS);
-            cargo_label: STEL;
+            cargo_label: "STEL";
             town_growth_effect: TOWNGROWTH_NONE;
             town_growth_multiplier: 1;
             units_of_cargo: TTD_STR_TONS;
@@ -372,7 +374,7 @@ BDMT
             cargo_payment_list_colour: 38;
             is_freight: 1;
             cargo_classes: bitmask(CC_BULK);
-            cargo_label: COKE;
+            cargo_label: "COKE";
             town_growth_effect: TOWNGROWTH_NONE;
             town_growth_multiplier: 1;
             units_of_cargo: TTD_STR_TONS;
@@ -400,7 +402,7 @@ BDMT
             cargo_payment_list_colour: 58;
             is_freight: 1;
             cargo_classes: bitmask(CC_BULK, CC_PIECE_GOODS);
-            cargo_label: WDPR;
+            cargo_label: "WDPR";
             town_growth_effect: TOWNGROWTH_NONE;
             town_growth_multiplier: 1;
             units_of_cargo: TTD_STR_TONS;
@@ -428,7 +430,7 @@ BDMT
             cargo_payment_list_colour: 48;
             is_freight: 1;
             cargo_classes: bitmask(CC_EXPRESS, CC_PIECE_GOODS, CC_REFRIGERATED);
-            cargo_label: FOOD;
+            cargo_label: "FOOD";
             town_growth_effect: TOWNGROWTH_NONE;
             town_growth_multiplier: 1;
             units_of_cargo: TTD_STR_TONS;
@@ -456,7 +458,7 @@ BDMT
             cargo_payment_list_colour: 82;
             is_freight: 1;
             cargo_classes: bitmask(CC_EXPRESS, CC_PIECE_GOODS, CC_REFRIGERATED);
-            cargo_label: FRUT;
+            cargo_label: "FRUT";
             town_growth_effect: TOWNGROWTH_NONE;
             town_growth_multiplier: 1;
             units_of_cargo: TTD_STR_TONS;
@@ -484,7 +486,7 @@ BDMT
             cargo_payment_list_colour: 175;
             is_freight: 1;
             cargo_classes: bitmask(CC_LIQUID);
-            cargo_label: PETR;
+            cargo_label: "PETR";
             town_growth_effect: TOWNGROWTH_NONE;
             town_growth_multiplier: 1;
             units_of_cargo: TTD_STR_LITERS;
@@ -512,7 +514,7 @@ BDMT
             cargo_payment_list_colour: 161;
             is_freight: 1;
             cargo_classes: bitmask(CC_EXPRESS, CC_LIQUID, CC_REFRIGERATED);
-            cargo_label: MILK;
+            cargo_label: "MILK";
             town_growth_effect: TOWNGROWTH_NONE;
             town_growth_multiplier: 1;
             units_of_cargo: TTD_STR_LITERS;
@@ -540,7 +542,7 @@ BDMT
             cargo_payment_list_colour: 37;
             is_freight: 1;
             cargo_classes: bitmask(CC_BULK, CC_COVERED);
-            cargo_label: CLAY;
+            cargo_label: "CLAY";
             town_growth_effect: TOWNGROWTH_NONE;
             town_growth_multiplier: 1;
             units_of_cargo: TTD_STR_TONS;
@@ -568,7 +570,7 @@ BDMT
             cargo_payment_list_colour: 119;
             is_freight: 1;
             cargo_classes: bitmask(CC_BULK);
-            cargo_label: SLAG;
+            cargo_label: "SLAG";
             town_growth_effect: TOWNGROWTH_NONE;
             town_growth_multiplier: 1;
             units_of_cargo: TTD_STR_TONS;
@@ -596,7 +598,7 @@ BDMT
             cargo_payment_list_colour: 196;
             is_freight: 1;
             cargo_classes: bitmask(CC_BULK);
-            cargo_label: SAND;
+            cargo_label: "SAND";
             town_growth_effect: TOWNGROWTH_NONE;
             town_growth_multiplier: 1;
             units_of_cargo: TTD_STR_TONS;
@@ -624,7 +626,7 @@ BDMT
             cargo_payment_list_colour: 79;
             is_freight: 1;
             cargo_classes: bitmask(CC_PIECE_GOODS);
-            cargo_label: LVST;
+            cargo_label: "LVST";
             town_growth_effect: TOWNGROWTH_NONE;
             town_growth_multiplier: 1;
             units_of_cargo: TTD_STR_ITEMS;
@@ -652,7 +654,7 @@ BDMT
             cargo_payment_list_colour: 135;
             is_freight: 1;
             cargo_classes: bitmask(CC_PIECE_GOODS, CC_COVERED);
-            cargo_label: WOOL;
+            cargo_label: "WOOL";
             town_growth_effect: TOWNGROWTH_NONE;
             town_growth_multiplier: 1;
             units_of_cargo: TTD_STR_TONS;
@@ -680,7 +682,7 @@ BDMT
             cargo_payment_list_colour: 10;
             is_freight: 1;
             cargo_classes: bitmask(CC_PIECE_GOODS);
-            cargo_label: METL;
+            cargo_label: "METL";
             town_growth_effect: TOWNGROWTH_NONE;
             town_growth_multiplier: 1;
             units_of_cargo: TTD_STR_TONS;
@@ -708,7 +710,7 @@ BDMT
             cargo_payment_list_colour: 44;
             is_freight: 1;
             cargo_classes: bitmask(CC_BULK, CC_PIECE_GOODS);
-            cargo_label: BDMT;
+            cargo_label: "BDMT";
             town_growth_effect: TOWNGROWTH_NONE;
             town_growth_multiplier: 1;
             units_of_cargo: TTD_STR_TONS;
@@ -723,6 +725,89 @@ BDMT
         }
     }
 
+//Engineering Supplies
+    item(FEAT_CARGOS, ENSP, 23) {
+        property {
+            number: 23;
+            type_name: string(STR_CARGO_PLURAL_ENSP);
+            unit_name: string(STR_CARGO_SINGULAR_ENSP);
+            type_abbreviation: string(STR_CARGO_ABBREV_ENSP);
+            sprite: NEW_CARGO_SPRITE;
+            weight: 0.65;
+            station_list_colour: 166;
+            cargo_payment_list_colour: 166;
+            is_freight: 1;
+            cargo_classes: bitmask(CC_EXPRESS, CC_PIECE_GOODS, CC_REFRIGERATED);
+            cargo_label: "ENSP";
+            town_growth_effect: TOWNGROWTH_NONE;
+            town_growth_multiplier: 1;
+            units_of_cargo: TTD_STR_CRATES;
+            items_of_cargo: string(STR_CARGO_ITEM_ENSP);
+            penalty_lowerbound: 2;
+            single_penalty_length: 32;
+            price_factor: 178;
+            capacity_multiplier: 1;
+        }
+        graphics {
+            cargoicon_ENSP;
+        }
+    }
+
+//Farm Supplies
+    item(FEAT_CARGOS, FMSP, 24) {
+        property {
+            number: 24;
+            type_name: string(STR_CARGO_PLURAL_FMSP);
+            unit_name: string(STR_CARGO_SINGULAR_FMSP);
+            type_abbreviation: string(STR_CARGO_ABBREV_FMSP);
+            sprite: NEW_CARGO_SPRITE;
+            weight: 1;
+            station_list_colour: 103;
+            cargo_payment_list_colour: 103;
+            is_freight: 1;
+            cargo_classes: bitmask(CC_EXPRESS, CC_PIECE_GOODS);
+            cargo_label: "FMSP";
+            town_growth_effect: TOWNGROWTH_NONE;
+            town_growth_multiplier: 1;
+            units_of_cargo: TTD_STR_CRATES;
+            items_of_cargo: string(STR_CARGO_ITEM_FMSP);
+            penalty_lowerbound: 2;
+            single_penalty_length: 32;
+            price_factor: 174;
+            capacity_multiplier: 1;
+        }
+        graphics {
+            cargoicon_FMSP;
+        }
+    }
+
+//Vehicles
+    item(FEAT_CARGOS, VEHI, 25) {
+        property {
+            number: 25;
+            type_name: string(STR_CARGO_PLURAL_VEHI);
+            unit_name: string(STR_CARGO_SINGULAR_VEHI);
+            type_abbreviation: string(STR_CARGO_ABBREV_VEHI);
+            sprite: NEW_CARGO_SPRITE;
+            weight: 1;
+            station_list_colour: 40;
+            cargo_payment_list_colour: 40;
+            is_freight: 1;
+            cargo_classes: bitmask(CC_PIECE_GOODS);
+            cargo_label: "VEHI";
+            town_growth_effect: TOWNGROWTH_NONE;
+            town_growth_multiplier: 1;
+            units_of_cargo: TTD_STR_TONS;
+            items_of_cargo: string(STR_CARGO_ITEM_VEHI);
+            penalty_lowerbound: 15;
+            single_penalty_length: 128;
+            price_factor: 175;
+            capacity_multiplier: 1;
+        }
+        graphics {
+            cargoicon_VEHI;
+        }
+    }
 # 1 "FITI.pnml" 1
 # 1 "src/functions.nml" 1
 
@@ -985,6 +1070,14 @@ graphics {
 }}
 
 tilelayout industry_layout_coal_mine {
+									0,1:	ind_tile_coal_mine_1;	0,2:	ind_tile_coal_mine_1;	0,3:	ind_tile_coal_mine_1;
+	1,0:	ind_tile_coal_mine_1;	1,1:	ind_tile_coal_mine_1;	1,2:	ind_tile_coal_mine_1;	1,3:	ind_tile_coal_mine_1;	1,4:	ind_tile_coal_mine_1;
+	2,0:	ind_tile_coal_mine_1;	2,1:	ind_tile_coal_mine_1;	2,2:	ind_tile_coal_mine_1;	2,3:	ind_tile_coal_mine_1;	2,4:	ind_tile_coal_mine_1;
+	3,0:	ind_tile_coal_mine_1;	3,1:	ind_tile_coal_mine_1;	3,2:	ind_tile_coal_mine_1;	3,3:	ind_tile_coal_mine_1;	3,4:	ind_tile_coal_mine_1;
+									4,1:	ind_tile_coal_mine_1;	4,2:	ind_tile_coal_mine_1;	4,3:	ind_tile_coal_mine_1;
+}
+
+tilelayout industry_layout_coal_mine_small {
 	0,0:	ind_tile_coal_mine_1;	0,1:	ind_tile_coal_mine_1;	0,2:	ind_tile_coal_mine_1;	0,3:	ind_tile_coal_mine_1;
 	1,0:	ind_tile_coal_mine_1;	1,1:	ind_tile_coal_mine_1;	1,2:	ind_tile_coal_mine_1;	1,3:	ind_tile_coal_mine_1;
 	2,0:	ind_tile_coal_mine_1;	2,1:	ind_tile_coal_mine_1;	2,2:	ind_tile_coal_mine_1;	2,3:	ind_tile_coal_mine_1;
@@ -992,6 +1085,7 @@ tilelayout industry_layout_coal_mine {
 
 /* Location check */
 switch (FEAT_INDUSTRIES, SELF, loc_check_coal_mine, IsTown() && IsInQuadrantN() && IndustryElevationCheck(4,255)) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_PRIMARY);}
+switch (FEAT_INDUSTRIES, SELF, loc_check_coal_mine_small, IsTown() && !IsInQuadrantN() && IndustryElevationCheck(4,255)) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_PRIMARY);}
 
 /* Coal Mine industry */
 item (FEAT_INDUSTRIES, industry_coal_mine, 0) {
@@ -1015,5 +1109,110 @@ item (FEAT_INDUSTRIES, industry_coal_mine, 0) {
 	}
 }
 
+item (FEAT_INDUSTRIES, industry_coal_mine_small, 2) {
+	property {
+        substitute: 0;
+        override: 0;
+		life_type: IND_LIFE_TYPE_EXTRACTIVE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("COAL",7),];
+		name: string(STR_INDUSTRY_COAL_MINE_SMALL);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_COAL_MINE));
+        prob_map_gen: 20; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 255;
+		layouts: [
+			industry_layout_coal_mine_small,
+		];
+	}
+	graphics {
+        location_check: loc_check_coal_mine_small;
+	}
+}
+
 /* *** End Coal Mine *** */
+# 1 "FITI.pnml" 1
+# 1 "src/iron_mine.nml" 1
+
+/* *** Begin iron Mine *** */
+
+spritelayout sprlay_iron_mine_6 {
+	ground		{sprite:2022;}
+}
+
+item (FEAT_INDUSTRYTILES, ind_tile_iron_mine_1) { // hoist
+property {
+	substitute:         02;
+	land_shape_flags:    bitmask(LSF_ONLY_ON_FLAT_LAND);
+	special_flags: bitmask(INDTILE_FLAG_ACCEPT_ALL);
+}
+graphics {
+	default:			sprlay_iron_mine_6;
+}}
+
+tilelayout industry_layout_iron_mine {
+									0,1:	ind_tile_iron_mine_1;	0,2:	ind_tile_iron_mine_1;	0,3:	ind_tile_iron_mine_1;
+	1,0:	ind_tile_iron_mine_1;	1,1:	ind_tile_iron_mine_1;	1,2:	ind_tile_iron_mine_1;	1,3:	ind_tile_iron_mine_1;	1,4:	ind_tile_iron_mine_1;
+	2,0:	ind_tile_iron_mine_1;	2,1:	ind_tile_iron_mine_1;	2,2:	ind_tile_iron_mine_1;	2,3:	ind_tile_iron_mine_1;	2,4:	ind_tile_iron_mine_1;
+	3,0:	ind_tile_iron_mine_1;	3,1:	ind_tile_iron_mine_1;	3,2:	ind_tile_iron_mine_1;	3,3:	ind_tile_iron_mine_1;	3,4:	ind_tile_iron_mine_1;
+									4,1:	ind_tile_iron_mine_1;	4,2:	ind_tile_iron_mine_1;	4,3:	ind_tile_iron_mine_1;
+}
+
+tilelayout industry_layout_iron_mine_small {
+	0,0:	ind_tile_iron_mine_1;	0,1:	ind_tile_iron_mine_1;	0,2:	ind_tile_iron_mine_1;
+	1,0:	ind_tile_iron_mine_1;	1,1:	ind_tile_iron_mine_1;	1,2:	ind_tile_iron_mine_1;
+	2,0:	ind_tile_iron_mine_1;	2,1:	ind_tile_iron_mine_1;	2,2:	ind_tile_iron_mine_1;
+	3,0:	ind_tile_iron_mine_1;	3,1:	ind_tile_iron_mine_1;	3,2:	ind_tile_iron_mine_1;
+}
+
+/* Location check */
+switch (FEAT_INDUSTRIES, SELF, loc_check_iron_mine, IsTown() && IsInQuadrantS() && IndustryElevationCheck(4,255)) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_PRIMARY);}
+switch (FEAT_INDUSTRIES, SELF, loc_check_iron_mine_small, IsTown() && !IsInQuadrantS() && IndustryElevationCheck(4,255)) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_PRIMARY);}
+
+/* iron Mine industry */
+item (FEAT_INDUSTRIES, industry_iron_mine, 1) {
+	property {
+        substitute: 0;
+        override: 0;
+		life_type: IND_LIFE_TYPE_EXTRACTIVE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("IORE",15),];
+		name: string(STR_INDUSTRY_IRON_MINE);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_IRON_MINE));
+        prob_map_gen: 2; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		map_colour: 126;
+		fund_cost_multiplier: 255;
+		layouts: [
+			industry_layout_iron_mine,
+		];
+	}
+	graphics {
+        location_check: loc_check_iron_mine;
+	}
+}
+/* iron Mine industry */
+item (FEAT_INDUSTRIES, industry_iron_mine_small, 3) {
+	property {
+        substitute: 0;
+        override: 0;
+		life_type: IND_LIFE_TYPE_EXTRACTIVE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("IORE",7),];
+		name: string(STR_INDUSTRY_IRON_MINE_SMALL);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_IRON_MINE));
+        prob_map_gen: 20; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		map_colour: 126;
+		fund_cost_multiplier: 255;
+		layouts: [
+			industry_layout_iron_mine_small,
+		];
+	}
+	graphics {
+        location_check: loc_check_iron_mine_small;
+	}
+}
+
+/* *** End iron Mine *** */
 # 1 "FITI.pnml" 1

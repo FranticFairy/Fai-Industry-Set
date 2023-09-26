@@ -3,3 +3,4 @@
 #include "src/functions.nml"
 
 #include "src/coal_mine.nml"
+#include "src/iron_mine.nml"
