@@ -1,0 +1,31 @@
+
+tilelayout industry_layout_grai {
+	0,0:	ind_tile_dirt;
+	1,0:	ind_tile_dirt;
+	2,0:	ind_tile_dirt;							2,2:	ind_tile_dirt;
+}
+
+switch (FEAT_INDUSTRIES, SELF, loc_check_grai, IsTown() && IndustryElevationCheck(2,255)) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_PRIMARY);}
+
+/* FARM */
+item (FEAT_INDUSTRIES, industry_grai, 14) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 85;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS,IND_FLAG_PLANT_FIELDS_WHEN_BUILT,IND_FLAG_PLANT_FIELDS_PERIODICALLY);
+        cargo_types: [produce_cargo("GRAI",8),accept_cargo("FMSP")];
+		name: string(STR_INDUSTRY_GRAI);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_GRAI));
+        prob_map_gen: 10; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_grai,
+		];
+	}
+	graphics {
+        location_check: loc_check_grai;
+	}
+}

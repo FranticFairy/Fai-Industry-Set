@@ -1,0 +1,63 @@
+
+tilelayout industry_layout_iore {
+							0,1:	ind_tile_dirt;	0,2:	ind_tile_dirt;	0,3:	ind_tile_dirt;
+	1,0:	ind_tile_dirt;	1,1:	ind_tile_dirt;	1,2:	ind_tile_dirt;	1,3:	ind_tile_dirt;	1,4:	ind_tile_dirt;
+	2,0:	ind_tile_dirt;	2,1:	ind_tile_dirt;	2,2:	ind_tile_dirt;	2,3:	ind_tile_dirt;	2,4:	ind_tile_dirt;
+	3,0:	ind_tile_dirt;	3,1:	ind_tile_dirt;	3,2:	ind_tile_dirt;	3,3:	ind_tile_dirt;	3,4:	ind_tile_dirt;
+							4,1:	ind_tile_dirt;	4,2:	ind_tile_dirt;	4,3:	ind_tile_dirt;
+}
+
+tilelayout industry_layout_iore_small {
+	0,0:	ind_tile_dirt;	0,1:	ind_tile_dirt;	0,2:	ind_tile_dirt;
+	1,0:	ind_tile_dirt;	1,1:	ind_tile_dirt;	1,2:	ind_tile_dirt;
+	2,0:	ind_tile_dirt;	2,1:	ind_tile_dirt;	2,2:	ind_tile_dirt;
+	3,0:	ind_tile_dirt;	3,1:	ind_tile_dirt;	3,2:	ind_tile_dirt;
+}
+
+switch (FEAT_INDUSTRIES, SELF, loc_check_iore, IsInQuadrantS() && IndustryElevationCheck(4,255) && NoNearbyCompetitors(industry_iore, 64)) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_PRIMARY);}
+switch (FEAT_INDUSTRIES, SELF, loc_check_iore_small, !IsInQuadrantS() && IndustryElevationCheck(4,255) && NoNearbyCompetitors(industry_iore_small, 128)) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_PRIMARY);}
+
+/* IRON MINE */
+item (FEAT_INDUSTRIES, industry_iore, 2) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 55;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("IORE",8),accept_cargo("ENSP")];
+		name: string(STR_INDUSTRY_IORE);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_IORE));
+        prob_map_gen: 10; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_iore,
+		];
+	}
+	graphics {
+        location_check: loc_check_iore;
+	}
+}
+
+item (FEAT_INDUSTRIES, industry_iore_small, 3) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 55;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("IORE",2),accept_cargo("ENSP")];
+		name: string(STR_INDUSTRY_IORE_SMALL);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_IORE));
+        prob_map_gen: 5; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_iore_small,
+		];
+	}
+	graphics {
+        location_check: loc_check_iore_small;
+	}
+}

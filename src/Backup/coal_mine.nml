@@ -43,7 +43,7 @@ item (FEAT_INDUSTRIES, industry_coal_mine, 0) {
         cargo_types: [produce_cargo("COAL",15),];
 		name: string(STR_INDUSTRY_COAL_MINE);
 		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_COAL_MINE));
-        prob_map_gen: 2; // Account for difficulty of finding suitable locatiom
+        prob_map_gen: 100; // Account for difficulty of finding suitable locatiom
         prob_in_game: 0;
 		fund_cost_multiplier: 255;
 		layouts: [
@@ -64,7 +64,7 @@ item (FEAT_INDUSTRIES, industry_coal_mine_small, 2) {
         cargo_types: [produce_cargo("COAL",7),];
 		name: string(STR_INDUSTRY_COAL_MINE_SMALL);
 		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_COAL_MINE));
-        prob_map_gen: 20; // Account for difficulty of finding suitable locatiom
+        prob_map_gen: 200; // Account for difficulty of finding suitable locatiom
         prob_in_game: 0;
 		fund_cost_multiplier: 255;
 		layouts: [

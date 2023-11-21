@@ -1,0 +1,37 @@
+
+tilelayout industry_layout_assy {
+	0,0:	ind_tile_concrete;	0,1:	ind_tile_concrete;	0,2:	ind_tile_concrete;
+	1,0:	ind_tile_concrete;	1,1:	ind_tile_concrete;	1,2:	ind_tile_concrete;
+	2,0:	ind_tile_concrete;	2,1:	ind_tile_concrete;	2,2:	ind_tile_concrete;
+	3,0:	ind_tile_concrete;	3,1:	ind_tile_concrete;	3,2:	ind_tile_concrete;
+	4,0:	ind_tile_concrete;	4,1:	ind_tile_concrete;	4,2:	ind_tile_concrete;
+	5,0:	ind_tile_concrete;	5,1:	ind_tile_concrete;	5,2:	ind_tile_concrete;
+	6,0:	ind_tile_concrete;	6,1:	ind_tile_concrete;	6,2:	ind_tile_concrete;
+	7,0:	ind_tile_concrete;	7,1:	ind_tile_concrete;	7,2:	ind_tile_concrete;
+	8,0:	ind_tile_concrete;	8,1:	ind_tile_concrete;	8,2:	ind_tile_concrete;
+}
+
+switch (FEAT_INDUSTRIES, SELF, loc_check_assy, IsCity() && IsInTown() && CityHasNoSecondaryIndustries()) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_SECONDARY);}
+
+/* ASSEMBLY PLANT */
+item (FEAT_INDUSTRIES, industry_assy, 20) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 141;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("GOOD",6),produce_cargo("ENSP",6),accept_cargo("STEL")];
+		name: string(STR_INDUSTRY_ASSY);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_ASSY));
+        prob_map_gen: 10; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_assy,
+		];
+	}
+	graphics {
+        location_check: loc_check_assy;
+	}
+}

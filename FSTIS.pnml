@@ -1,0 +1,5 @@
+#include "src/header-small.nml"
+#include "src/cargos.nml"
+//#include "src/functions.nml"
+
+#include "src/onetile.nml"

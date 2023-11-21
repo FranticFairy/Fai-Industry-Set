@@ -1,0 +1,811 @@
+spriteset(tile_fstis_offshore) {
+	[0, 0, 64, 64, -31, -33, ANIM | NOCROP, "gfx/Fishing_Offshore.png"]
+}
+spritelayout offshore_spritelayout {
+    childsprite {
+        sprite: GROUNDSPRITE_WATER;
+        recolour_mode: RECOLOUR_REMAP;
+        palette: PALETTE_USE_DEFAULT;
+        hide_sprite: (LOAD_TEMP(13));
+        always_draw: 1;
+    }
+	building {
+		sprite: tile_fstis_offshore(0);
+		recolour_mode: RECOLOUR_REMAP;
+		palette: PALETTE_USE_DEFAULT;
+		xoffset: 0;
+		yoffset: 0;
+		zoffset: 0;
+		xextent: 16;
+		yextent: 16;
+		zextent: 16;
+		always_draw: 0;
+		hide_sprite: (LOAD_TEMP(127));
+	}
+}
+item (FEAT_INDUSTRYTILES, ind_tile_offshore) {
+	property {
+		substitute:         02;
+		land_shape_flags:    bitmask(LSF_ONLY_ON_FLAT_LAND);
+		special_flags: bitmask(INDTILE_FLAG_ACCEPT_ALL);
+	}
+	graphics {
+		default:			offshore_spritelayout;
+	}
+}
+tilelayout industry_layout_offshore {
+	0,0:	ind_tile_offshore;
+}
+
+spriteset(tile_fstis_dirt) {
+	[0, 0, 64, 64, -31, -33, ANIM | NOCROP, "gfx/dirt.png"]
+}
+spritelayout dirt_spritelayout {
+    childsprite {
+        sprite: GROUNDSPRITE_NORMAL;
+        recolour_mode: RECOLOUR_REMAP;
+        palette: PALETTE_USE_DEFAULT;
+        hide_sprite: (LOAD_TEMP(13));
+        always_draw: 1;
+    }
+	building {
+		sprite: tile_fstis_dirt(0);
+		recolour_mode: RECOLOUR_REMAP;
+		palette: PALETTE_USE_DEFAULT;
+		xoffset: 0;
+		yoffset: 0;
+		zoffset: 0;
+		xextent: 16;
+		yextent: 16;
+		zextent: 16;
+		always_draw: 0;
+		hide_sprite: (LOAD_TEMP(127));
+	}
+}
+item (FEAT_INDUSTRYTILES, ind_tile_dirt) {
+	property {
+		substitute:         02;
+		land_shape_flags:    bitmask(LSF_ONLY_ON_FLAT_LAND);
+		special_flags: bitmask(INDTILE_FLAG_ACCEPT_ALL);
+	}
+	graphics {
+		default:			dirt_spritelayout;
+	}
+}
+tilelayout industry_layout_dirt {
+	0,0:	ind_tile_dirt;
+}
+spriteset(tile_fstis_empty) {
+	[0, 0, 64, 64, -31, -33, ANIM | NOCROP, "gfx/empty.png"]
+}
+spritelayout empty_spritelayout {
+    childsprite {
+        sprite: GROUNDSPRITE_NORMAL;
+        recolour_mode: RECOLOUR_REMAP;
+        palette: PALETTE_USE_DEFAULT;
+        hide_sprite: (LOAD_TEMP(13));
+        always_draw: 1;
+    }
+	building {
+		sprite: tile_fstis_empty(0);
+		recolour_mode: RECOLOUR_REMAP;
+		palette: PALETTE_USE_DEFAULT;
+		xoffset: 0;
+		yoffset: 0;
+		zoffset: 0;
+		xextent: 16;
+		yextent: 16;
+		zextent: 16;
+		always_draw: 0;
+		hide_sprite: (LOAD_TEMP(127));
+	}
+}
+item (FEAT_INDUSTRYTILES, ind_tile_empty) {
+	property {
+		substitute:         02;
+		land_shape_flags:    bitmask(LSF_ONLY_ON_FLAT_LAND);
+		special_flags: bitmask(INDTILE_FLAG_ACCEPT_ALL);
+	}
+	graphics {
+		default:			empty_spritelayout;
+	}
+}
+tilelayout industry_layout_empty {
+	0,0:	ind_tile_empty;
+}
+spriteset(tile_fstis_cobble) {
+	[0, 0, 64, 64, -31, -33, ANIM | NOCROP, "gfx/cobble.png"]
+}
+spritelayout cobble_spritelayout {
+    childsprite {
+        sprite: GROUNDSPRITE_NORMAL;
+        recolour_mode: RECOLOUR_REMAP;
+        palette: PALETTE_USE_DEFAULT;
+        hide_sprite: (LOAD_TEMP(13));
+        always_draw: 1;
+    }
+	building {
+		sprite: tile_fstis_cobble(0);
+		recolour_mode: RECOLOUR_REMAP;
+		palette: PALETTE_USE_DEFAULT;
+		xoffset: 0;
+		yoffset: 0;
+		zoffset: 0;
+		xextent: 16;
+		yextent: 16;
+		zextent: 16;
+		always_draw: 0;
+		hide_sprite: (LOAD_TEMP(127));
+	}
+}
+item (FEAT_INDUSTRYTILES, ind_tile_cobble) {
+	property {
+		substitute:         02;
+		land_shape_flags:    bitmask(LSF_ONLY_ON_FLAT_LAND);
+		special_flags: bitmask(INDTILE_FLAG_ACCEPT_ALL);
+	}
+	graphics {
+		default:			cobble_spritelayout;
+	}
+}
+tilelayout industry_layout_cobble {
+	0,0:	ind_tile_cobble;
+}
+spriteset(tile_fstis_isr) {
+	[0, 0, 64, 64, -31, -33, ANIM | NOCROP, "gfx/isr.png"]
+}
+spritelayout isr_spritelayout {
+    childsprite {
+        sprite: GROUNDSPRITE_NORMAL;
+        recolour_mode: RECOLOUR_REMAP;
+        palette: PALETTE_USE_DEFAULT;
+        hide_sprite: (LOAD_TEMP(13));
+        always_draw: 1;
+    }
+	building {
+		sprite: tile_fstis_isr(0);
+		recolour_mode: RECOLOUR_REMAP;
+		palette: PALETTE_USE_DEFAULT;
+		xoffset: 0;
+		yoffset: 0;
+		zoffset: 0;
+		xextent: 16;
+		yextent: 16;
+		zextent: 16;
+		always_draw: 0;
+		hide_sprite: (LOAD_TEMP(127));
+	}
+}
+item (FEAT_INDUSTRYTILES, ind_tile_isr) {
+	property {
+		substitute:         02;
+		land_shape_flags:    bitmask(LSF_ONLY_ON_FLAT_LAND);
+		special_flags: bitmask(INDTILE_FLAG_ACCEPT_ALL);
+	}
+	graphics {
+		default:			isr_spritelayout;
+	}
+}
+tilelayout industry_layout_isr {
+	0,0:	ind_tile_isr;
+}
+spriteset(tile_fstis_concrete) {
+	[0, 0, 64, 64, -31, -33, ANIM | NOCROP, "gfx/concrete.png"]
+}
+spritelayout concrete_spritelayout {
+    childsprite {
+        sprite: GROUNDSPRITE_NORMAL;
+        recolour_mode: RECOLOUR_REMAP;
+        palette: PALETTE_USE_DEFAULT;
+        hide_sprite: (LOAD_TEMP(13));
+        always_draw: 1;
+    }
+	building {
+		sprite: tile_fstis_concrete(0);
+		recolour_mode: RECOLOUR_REMAP;
+		palette: PALETTE_USE_DEFAULT;
+		xoffset: 0;
+		yoffset: 0;
+		zoffset: 0;
+		xextent: 16;
+		yextent: 16;
+		zextent: 16;
+		always_draw: 0;
+		hide_sprite: (LOAD_TEMP(127));
+	}
+}
+item (FEAT_INDUSTRYTILES, ind_tile_concrete) {
+	property {
+		substitute:         02;
+		land_shape_flags:    bitmask(LSF_ONLY_ON_FLAT_LAND);
+		special_flags: bitmask(INDTILE_FLAG_ACCEPT_ALL);
+	}
+	graphics {
+		default:			concrete_spritelayout;
+	}
+}
+tilelayout industry_layout_concrete {
+	0,0:	ind_tile_concrete;
+}
+
+/* Coal Mine industry */
+item (FEAT_INDUSTRIES, industry_coal, 0) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 1;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("COAL",8),accept_cargo("ENSP")];
+		name: string(STR_INDUSTRY_COAL);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_COAL));
+        prob_map_gen: 0; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_dirt,
+		];
+	}
+}
+
+/* Iron Mine industry */
+item (FEAT_INDUSTRIES, industry_iore, 1) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 55;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("IORE",8),accept_cargo("ENSP")];
+		name: string(STR_INDUSTRY_IORE);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_IORE));
+        prob_map_gen: 0; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_dirt,
+		];
+	}
+}
+
+/* Forestry industry */
+item (FEAT_INDUSTRIES, industry_wood, 2) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 83;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("WOOD",8),accept_cargo("FMSP")];
+		name: string(STR_INDUSTRY_WOOD);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_WOOD));
+        prob_map_gen: 0; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_dirt,
+		];
+	}
+}
+
+/* Orchard industry */
+item (FEAT_INDUSTRIES, industry_frut, 3) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 207;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("FRUT",8),accept_cargo("FMSP")];
+		name: string(STR_INDUSTRY_FRUT);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_FRUT));
+        prob_map_gen: 0; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_dirt,
+		];
+	}
+}
+
+/* Oil Well industry */
+item (FEAT_INDUSTRIES, industry_oil_, 4) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 72;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("OIL_",8),accept_cargo("ENSP")];
+		name: string(STR_INDUSTRY_OIL_);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_OIL_));
+        prob_map_gen: 0; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_dirt,
+		];
+	}
+}
+
+/* Sawmill industry */
+item (FEAT_INDUSTRIES, industry_wdpr, 5) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 164;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("WDPR",8),accept_cargo("WOOD")];
+		name: string(STR_INDUSTRY_WDPR);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_WDPR));
+        prob_map_gen: 0; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_dirt,
+		];
+	}
+}
+
+/* Slag Grinding Plant industry */
+item (FEAT_INDUSTRIES, industry_slag, 6) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 19;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("BDMT",6),produce_cargo("FMSP",6),accept_cargo("SLAG")];
+		name: string(STR_INDUSTRY_SLAG);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_SLAG));
+        prob_map_gen: 0; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_dirt,
+		];
+	}
+}
+
+/* Coke Oven industry */
+item (FEAT_INDUSTRIES, industry_coke, 7) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 183;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("COKE",8),accept_cargo("COAL")];
+		name: string(STR_INDUSTRY_COKE);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_COKE));
+        prob_map_gen: 0; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_dirt,
+		];
+	}
+}
+
+/* Steel Mill industry */
+item (FEAT_INDUSTRIES, industry_stel, 8) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 10;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("STEL",8),produce_cargo("SLAG",4),accept_cargo("COKE"),accept_cargo("IORE")];
+		name: string(STR_INDUSTRY_STEL);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_STEL));
+        prob_map_gen: 0; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_dirt,
+		];
+	}
+}
+
+/* Pasture industry */
+item (FEAT_INDUSTRIES, industry_lvst, 10) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 168;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("MILK",4),produce_cargo("LVST",4),produce_cargo("WOOL",4),accept_cargo("FMSP")];
+		name: string(STR_INDUSTRY_LVST);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_LVST));
+        prob_map_gen: 0; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_empty,
+		];
+	}
+}
+
+/* Quarry industry */
+item (FEAT_INDUSTRIES, industry_clay, 11) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 194;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("CLAY",6),produce_cargo("SAND",6),accept_cargo("ENSP")];
+		name: string(STR_INDUSTRY_CLAY);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_CLAY));
+        prob_map_gen: 0; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_empty,
+		];
+	}
+}
+
+/* Farm industry */
+item (FEAT_INDUSTRIES, industry_grai, 12) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 85;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("GRAI",8),accept_cargo("FMSP")];
+		name: string(STR_INDUSTRY_GRAI);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_GRAI));
+        prob_map_gen: 0; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_empty,
+		];
+	}
+}
+
+/* Dairy industry */
+item (FEAT_INDUSTRIES, industry_milk, 20) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 24;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("FOOD",8),accept_cargo("MILK")];
+		name: string(STR_INDUSTRY_MILK);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_MILK));
+        prob_map_gen: 0; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_concrete,
+		];
+	}
+}
+
+/* Stockyard industry */
+item (FEAT_INDUSTRIES, industry_meat, 21) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 177;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("FOOD",8),accept_cargo("LVST")];
+		name: string(STR_INDUSTRY_MEAT);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_MEAT));
+        prob_map_gen: 0; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_concrete,
+		];
+	}
+}
+
+/* Fishmonger industry */
+item (FEAT_INDUSTRIES, industry_mngr, 22) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 169;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("FOOD",8),accept_cargo("FISH")];
+		name: string(STR_INDUSTRY_MNGR);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_MNGR));
+        prob_map_gen: 0; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_concrete,
+		];
+	}
+}
+
+/* Lumberyard industry */
+item (FEAT_INDUSTRIES, industry_lmbr, 23) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 43;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("BDMT",8),accept_cargo("WDPR")];
+		name: string(STR_INDUSTRY_LMBR);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_LMBR));
+        prob_map_gen: 0; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_concrete,
+		];
+	}
+}
+
+/* Assembly Plant industry */
+item (FEAT_INDUSTRIES, industry_assy, 24) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 141;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("GOOD",6),produce_cargo("ENSP",6),accept_cargo("STEL")];
+		name: string(STR_INDUSTRY_ASSY);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_ASSY));
+        prob_map_gen: 0; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_concrete,
+		];
+	}
+}
+
+/* Oil Refinery industry */
+item (FEAT_INDUSTRIES, industry_petr, 25) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 191;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("PETR",6),produce_cargo("FMSP",6),accept_cargo("OIL_")];
+		name: string(STR_INDUSTRY_PETR);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_PETR));
+        prob_map_gen: 0; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_concrete,
+		];
+	}
+}
+
+/* Power Plant industry */
+item (FEAT_INDUSTRIES, industry_powr, 26) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 181;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [accept_cargo("PETR")];
+		name: string(STR_INDUSTRY_POWR);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_POWR));
+        prob_map_gen: 0; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_concrete,
+		];
+	}
+}
+
+/* Textile Mill industry */
+item (FEAT_INDUSTRIES, industry_wool, 30) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 37;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("GOOD",8),accept_cargo("WOOL")];
+		name: string(STR_INDUSTRY_WOOL);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_WOOL));
+        prob_map_gen: 0; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_cobble,
+		];
+	}
+}
+
+/* Flour Mill industry */
+item (FEAT_INDUSTRIES, industry_bred, 31) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 49;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("FOOD",8),accept_cargo("GRAI")];
+		name: string(STR_INDUSTRY_BRED);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_BRED));
+        prob_map_gen: 0; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_cobble,
+		];
+	}
+}
+
+/* Brewery industry */
+item (FEAT_INDUSTRIES, industry_beer, 32) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 189;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("FOOD",8),accept_cargo("FRUT")];
+		name: string(STR_INDUSTRY_BEER);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_BEER));
+        prob_map_gen: 0; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_cobble,
+		];
+	}
+}
+
+/* Furniture Factory industry */
+item (FEAT_INDUSTRIES, industry_seat, 33) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 186;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("GOOD",8),accept_cargo("WDPR")];
+		name: string(STR_INDUSTRY_SEAT);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_SEAT));
+        prob_map_gen: 0; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_cobble,
+		];
+	}
+}
+
+/* Glassworks industry */
+item (FEAT_INDUSTRIES, industry_glas, 34) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 151;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("GOOD",8),accept_cargo("SAND")];
+		name: string(STR_INDUSTRY_GLAS);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_GLAS));
+        prob_map_gen: 0; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_cobble,
+		];
+	}
+}
+
+/* Brickworks industry */
+item (FEAT_INDUSTRIES, industry_bdmt, 35) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 64;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("BDMT",8),accept_cargo("CLAY")];
+		name: string(STR_INDUSTRY_BDMT);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_BDMT));
+        prob_map_gen: 0; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_cobble,
+		];
+	}
+}
+
+/* Builder's Yard industry */
+item (FEAT_INDUSTRIES, industry_yard, 36) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 173;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [accept_cargo("BDMT")];
+		name: string(STR_INDUSTRY_YARD);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_YARD));
+        prob_map_gen: 0; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_cobble,
+		];
+	}
+}
+
+/* Ironworks industry */
+item (FEAT_INDUSTRIES, industry_metl, 37) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 143;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("METL",8),accept_cargo("IORE"),accept_cargo("COAL")];
+		name: string(STR_INDUSTRY_METL);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_METL));
+        prob_map_gen: 0; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_cobble,
+		];
+	}
+}
+
+/* Tool Factory industry */
+item (FEAT_INDUSTRIES, industry_tool, 38) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 166;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("GOOD",6),produce_cargo("ENSP",6),accept_cargo("METL")];
+		name: string(STR_INDUSTRY_TOOL);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_TOOL));
+        prob_map_gen: 0; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_cobble,
+		];
+	}
+}
+
+/* Fishing Grounds industry */
+item (FEAT_INDUSTRIES, industry_fish, 40) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 160;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS, IND_FLAG_BUILT_ON_WATER, IND_FLAG_AI_CREATES_AIR_AND_SHIP_ROUTES);
+        cargo_types: [produce_cargo("FISH",8)];
+		name: string(STR_INDUSTRY_FISH);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_FISH));
+        prob_map_gen: 0; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_offshore,
+		];
+	}
+}
+
+

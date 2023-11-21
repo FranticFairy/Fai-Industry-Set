@@ -17,14 +17,25 @@ switch (FEAT_INDUSTRIES, SELF, BankIsFacingRoad, (nearby_tile_class(0,1) == TILE
  * @return 1 if no secondary industries exist, else 0.
  */
 switch (FEAT_INDUSTRIES, SELF, CityHasNoSecondaryIndustries, 
-    industry_town_count(industry_building_materials_factory) > 0 ||
-    industry_town_count(industry_factory) > 0 ||
-    industry_town_count(industry_food_processing_plant) > 0 ||
-    industry_town_count(industry_oil_refinery) > 0 ||
-    industry_town_count(industry_paper_mill) > 0 ||
-    industry_town_count(industry_recycling_center) > 0 ||
-    industry_town_count(industry_sawmill) > 0 ||
-    industry_town_count(industry_steel_mill) > 0
+    industry_town_count(industry_wdpr) > 0 ||
+    industry_town_count(industry_slag) > 0 ||
+    industry_town_count(industry_stel) > 0 ||
+    industry_town_count(industry_glas) > 0 ||
+    industry_town_count(industry_bdmt) > 0 ||
+    industry_town_count(industry_meat) > 0 ||
+    industry_town_count(industry_mngr) > 0 ||
+    industry_town_count(industry_lmbr) > 0 ||
+    industry_town_count(industry_assy) > 0 ||
+    industry_town_count(industry_petr) > 0 ||
+    industry_town_count(industry_bred) > 0 ||
+    industry_town_count(industry_powr) > 0 ||
+    industry_town_count(industry_wool) > 0 ||
+    industry_town_count(industry_beer) > 0 ||
+    industry_town_count(industry_yard) > 0 ||
+    industry_town_count(industry_metl) > 0 ||
+    industry_town_count(industry_tool) > 0 ||
+    industry_town_count(industry_coke) > 0 ||
+    industry_town_count(industry_milk) > 0
     ) {1: return 0; return 1;}
 
 /**
@@ -57,6 +68,7 @@ switch (FEAT_INDUSTRIES, SELF, IsWithinDistanceToTown, padding, (town_euclidean_
  * @return 1 if near a town, else 0.
  */
  switch (FEAT_INDUSTRIES, SELF, IsNearTown, IsWithinDistanceToTown(15)) {return;}
+ switch (FEAT_INDUSTRIES, SELF, IsInTown, IsWithinDistanceToTown(7)) {return;}
 
 /**
  * Get a town's population.

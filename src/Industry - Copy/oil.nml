@@ -1,0 +1,33 @@
+
+tilelayout industry_layout_oil_ {
+	0,0:	ind_tile_dirt;							0,2:	ind_tile_dirt;							0,4:	ind_tile_dirt;
+	
+							2,1:	ind_tile_dirt;							2,3:	ind_tile_dirt;
+	
+	4,0:	ind_tile_dirt;							4,2:	ind_tile_dirt;							4,4:	ind_tile_dirt;
+}
+
+switch (FEAT_INDUSTRIES, SELF, loc_check_oil_, NoNearbyCompetitors(industry_oil_, 128)) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_PRIMARY);}
+
+/* OIL WELLS */
+item (FEAT_INDUSTRIES, industry_oil_, 7) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 72;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("OIL_",8),accept_cargo("ENSP")];
+		name: string(STR_INDUSTRY_OIL_);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_OIL_));
+        prob_map_gen: 10; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_oil_,
+		];
+	}
+	graphics {
+        location_check: loc_check_oil_;
+	}
+}

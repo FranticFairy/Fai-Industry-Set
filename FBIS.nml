@@ -1,9 +1,9 @@
-# 1 "FSTIS.pnml"
-# 1 "src/header-small.nml" 1
+# 1 "FBIS.pnml"
+# 1 "src/header.nml" 1
 grf {
-	grfid: "FSIS";
-	name: string(STR_GRF_NAME_SMALL);
-	desc: string(STR_GRF_DESC_SMALL);
+	grfid: "FBIS";
+	name: string(STR_GRF_NAME);
+	desc: string(STR_GRF_DESC);
 	version: 27;
 	min_compatible_version: 23;
 
@@ -22,7 +22,7 @@ disable_item(FEAT_INDUSTRIES);
 
 /* Disable base game cargos */
 disable_item(FEAT_CARGOS);
-# 1 "FSTIS.pnml" 1
+# 1 "FBIS.pnml" 1
 # 1 "src/cargos.nml" 1
 cargotable {
 PASS,
@@ -811,10 +811,261 @@ VEHI,
             cargoicon_VEHI;
         }
     }
-# 1 "FSTIS.pnml" 1
-//#include "src/functions.nml"
+# 1 "FBIS.pnml" 1
+# 1 "src/functions.nml" 1
 
-# 1 "src/onetile.nml" 1
+/**
+ * Bypass location check requirements if the industry is being funded or if we're in Scenario Editor.
+ * @return 1 if the industry is being funded or we're in Scenario Editor, else 0 (the industry is being generated during map generation or during a game).
+ */
+switch (FEAT_INDUSTRIES, SELF, IsBeingFunded, (extra_callback_info2 == IND_CREATION_FUND || game_mode == GAMEMODE_EDITOR)) {return;}
+
+/**
+ * Check if a bank is facing a road.
+ * @return 1 if there are road tiles in front of the two bank tiles, else 0.
+ */
+switch (FEAT_INDUSTRIES, SELF, BankIsFacingRoad, (nearby_tile_class(0,1) == TILE_CLASS_ROAD) && nearby_tile_class(1,1) == TILE_CLASS_ROAD) {return;}
+
+/**
+ * Check if a secondary industry can be built in this city (because none already exist).
+ * Note: Banks are the exception and are really primary industries anyway.
+ * @return 1 if no secondary industries exist, else 0.
+ */
+switch (FEAT_INDUSTRIES, SELF, CityHasNoSecondaryIndustries, 
+    industry_town_count(industry_wdpr) > 0 ||
+    industry_town_count(industry_slag) > 0 ||
+    industry_town_count(industry_stel) > 0 ||
+    industry_town_count(industry_glas) > 0 ||
+    industry_town_count(industry_bdmt) > 0 ||
+    industry_town_count(industry_meat) > 0 ||
+    industry_town_count(industry_mngr) > 0 ||
+    industry_town_count(industry_lmbr) > 0 ||
+    industry_town_count(industry_assy) > 0 ||
+    industry_town_count(industry_petr) > 0 ||
+    industry_town_count(industry_bred) > 0 ||
+    industry_town_count(industry_powr) > 0 ||
+    industry_town_count(industry_wool) > 0 ||
+    industry_town_count(industry_beer) > 0 ||
+    industry_town_count(industry_yard) > 0 ||
+    industry_town_count(industry_metl) > 0 ||
+    industry_town_count(industry_tool) > 0 ||
+    industry_town_count(industry_coke) > 0 ||
+    industry_town_count(industry_milk) > 0
+    ) {1: return 0; return 1;}
+
+/**
+ * Check if there are any industries of a given type within a given distance.
+ * @return 1 if there are no industries of the given type within the required distance, else 0.
+ */
+ switch (FEAT_INDUSTRIES, SELF, NoNearbyCompetitors, industrytype, required_distance, industry_distance(industrytype) > required_distance) {return;}
+
+/**
+ * Helper function for IsWithinDistanceToTown()
+ * Note: The sum of the radii is greater than simply the largest radii, but it means larger towns have a greater range for industry placement.
+ * @returns the sum of the town's townzone radii. 
+ */
+switch (FEAT_INDUSTRIES, PARENT, StoreTownRadii,   town_zone_0_radius_square +
+                                                    town_zone_1_radius_square + 
+                                                    town_zone_2_radius_square + 
+                                                    town_zone_3_radius_square + 
+                                                    town_zone_4_radius_square) {return;}
+
+/**
+ * Checks the distance from an industry to its parent town.
+ * The townzone radii and Euclidean distance are both squared, so we need to sqaure the padding parameter to match.
+ * @param padding Area around the town where industries can spawn.
+ * @return 1 if the industry is within the given distance to the town, else 0.
+ */
+switch (FEAT_INDUSTRIES, SELF, IsWithinDistanceToTown, padding, (town_euclidean_dist(0,0) < ( (padding * padding) + StoreTownRadii()) ) ) {return;}
+
+/**
+ * Check if the industry is near a town - required for secondary industries.
+ * @return 1 if near a town, else 0.
+ */
+ switch (FEAT_INDUSTRIES, SELF, IsNearTown, IsWithinDistanceToTown(15)) {return;}
+ switch (FEAT_INDUSTRIES, SELF, IsInTown, IsWithinDistanceToTown(7)) {return;}
+
+/**
+ * Get a town's population.
+ * @return the population of the town.
+ */
+switch (FEAT_INDUSTRIES, PARENT, TownPopulation, population) {return;}
+
+/**
+ * Check if a town has a required population.
+ * @param required The required population.
+ * @return 1 if the town's population is over the given requirement, else 0.
+ */
+switch (FEAT_INDUSTRIES, SELF, TownHasPopulation, required, TownPopulation() > required) {return;}
+
+/**
+ * Get the adjusted production efficiency, where transporting 75% of possible passengers gives 100% production efficiency.
+ * @return The adjusted efficiency, from 0..100.
+ */
+switch (FEAT_INDUSTRIES, PARENT, GetAdjustedProductionEfficiency, percent_transported_passengers) {
+    0: return 0;
+    return min(percent_transported_passengers + 25, 100);
+}
+
+/**
+ * Get the secondary production level of a town, 1/5 the population divided by 8 production ticks per month, multiplied by the percentage of transported passengers.
+ * @return The production per 256 ticks.
+ */
+switch (FEAT_INDUSTRIES, SELF, GetSecondaryProductionLevel, (TownPopulation() / 5 / 8 * GetAdjustedProductionEfficiency()) / 100) {return;}
+
+/** 
+ * Get the primary industry population multiplier based on the population of the town. 
+ * @return The multiplier, in range 1-5.
+ */
+switch (FEAT_INDUSTRIES, PARENT, GetPopMultiplier, min(1 + (population / 1000), 5)) {return;}
+
+/**
+ * Get the primary industry production amount based on town population and percent of transported passengers.
+ * @return The amount to be produced every 256 ticks.
+ */
+switch (FEAT_INDUSTRIES, SELF, GetPrimaryProduction, (16 * 1 * 100) / 100) {return;}
+
+/**
+ * Choose the proper string for the next population goal for primary industry towns.
+ * @return The string ID for the chosen population goal helptext.
+ */
+switch (FEAT_INDUSTRIES, SELF, StringNextPrimaryProductionGoal, GetPopMultiplier()) {
+    1: return string(STR_PRIMARY_GOAL_1000);
+    2: return string(STR_PRIMARY_GOAL_2000);
+    3: return string(STR_PRIMARY_GOAL_3000);
+    4: return string(STR_PRIMARY_GOAL_4000);
+    return string(STR_PRIMARY_GOAL_MAX);
+}
+
+/**
+ * Choose the correct string for the helptext about transporting more passengers in town.
+ * @return The string ID for the correct helptext, either telling passengers to transport more, or to keep up the good work.
+ */
+switch (FEAT_INDUSTRIES, SELF, StringIncreaseProductionEfficiency, GetAdjustedProductionEfficiency()) {
+    0..99: return string(STR_PRIMARY_INCREASE_EFFICIENCY);
+    return string(STR_PRIMARY_MAX_EFFICIENCY);
+}
+
+/**
+ * Build text stack for primary industry helptext.
+ * @return The helptext string with substrings and values from the text stack.
+ */
+switch (FEAT_INDUSTRIES, SELF, StringGetPrimaryHelptext, [
+    STORE_TEMP(StringNextPrimaryProductionGoal() + 0xD000, 257),   // list the next population goal (or say we've reached it)
+    STORE_TEMP(GetAdjustedProductionEfficiency(), 258),   // current production efficiency
+    STORE_TEMP(StringIncreaseProductionEfficiency() + 0xD000, 259) // helptext to increase efficiency by transporting more passengers, if <100%, else an empty string
+]) {return string(STR_PRIMARY_HELPTEXT);}
+
+/**
+ * Build text stack for secondary industry helptext.
+ * @return The helptext string with substrings and values from the text stack.
+ */
+switch (FEAT_INDUSTRIES, SELF, StringGetSecondaryHelptext, [
+    STORE_TEMP(TownPopulation() / 5, 257),   // list the next population goal (or say we've reached it)
+    STORE_TEMP(GetAdjustedProductionEfficiency(), 258),   // current production efficiency
+    STORE_TEMP(StringIncreaseProductionEfficiency() + 0xD000, 259) // helptext to increase efficiency by transporting more passengers, if <100%, else an empty string
+]) {return string(STR_SECONDARY_HELPTEXT);}
+
+/**
+ * Is the parent town a city?
+ * @return True if it is a city, else false.
+ */
+switch (FEAT_INDUSTRIES, PARENT, IsCity, is_city) {return;}
+
+/**
+ * Is the parent town a town? (as oppposed to a city)
+ * @return True if it is a town, else false.
+ */
+ switch (FEAT_INDUSTRIES, PARENT, IsTown, !is_city) {return;}
+
+/**
+ * Check if an industry is within a range of elevation.
+ * @param min_z elevation (inclusive)
+ * @param max_z elevation (inclusive)
+ * @return 1 if the industry is at or between the specified min and max elevations, else 0
+ */
+switch (FEAT_INDUSTRIES, SELF, IndustryElevationCheck, min_z, max_z, nearby_tile_height(0,0) >= min_z && nearby_tile_height(0,0) <= max_z) {return;}
+
+/**
+ * Calculate the x coordinate of an industry's northernmost tile.
+ * @returns the x coordinate
+ */
+switch (FEAT_INDUSTRIES, SELF, GetTileX, var[0x80, 0, 0xFFFFFFFF] % map_x_edge) {return;}
+
+/**
+ * Calculate the y coordinate of an industry's northernmost tile.
+ * @returns the y coordinate
+ */
+switch (FEAT_INDUSTRIES, SELF, GetTileY, var[0x80, 0, 0xFFFFFFFF] / map_x_edge) {return;}
+
+ /**
+ * Check if an industry is in the North quadrant of the map.
+ * @return 1 if this is true, we're in Scenario Editor, or param_primary_quadrants disables this feature, else 0.
+ */
+switch (FEAT_INDUSTRIES, SELF, IsInQuadrantN,
+	!param_primary_quadrants || game_mode == GAMEMODE_EDITOR || (GetTileX() < (map_x_edge / 2) && GetTileY() < (map_y_edge / 2))
+) {return;}
+
+/**
+ * Check if an industry is in the East quadrant of the map.
+ * @return 1 if this is true, we're in Scenario Editor, or param_primary_quadrants disables this feature, else 0.
+ */
+switch (FEAT_INDUSTRIES, SELF, IsInQuadrantE,
+	!param_primary_quadrants || game_mode == GAMEMODE_EDITOR || (GetTileX() < (map_x_edge / 2) && GetTileY() > (map_y_edge / 2))
+) {return;}
+
+/**
+ * Check if an industry is in the South quadrant of the map.
+ * @return 1 if this is true, we're in Scenario Editor, or param_primary_quadrants disables this feature, else 0.
+ */
+switch (FEAT_INDUSTRIES, SELF, IsInQuadrantS,
+	!param_primary_quadrants || game_mode == GAMEMODE_EDITOR || (GetTileX() > (map_x_edge / 2) && GetTileY() > (map_y_edge / 2))
+) {return;}
+
+/**
+ * Check if an industry is in the West quadrant of the map.
+ * @return 1 if this is true, we're in Scenario Editor, or param_primary_quadrants disables this feature, else 0.
+ */
+switch (FEAT_INDUSTRIES, SELF, IsInQuadrantW,
+	!param_primary_quadrants || game_mode == GAMEMODE_EDITOR || (GetTileX() > (map_x_edge / 2) && GetTileY() < (map_y_edge / 2))
+) {return;}
+
+/**
+ * Check if an industry is in the Northeast quadrant of the map.
+ * @return 1 if this is true, we're in Scenario Editor, or param_primary_quadrants disables this feature, else 0. 
+ */
+switch (FEAT_INDUSTRIES, SELF, IsInQuadrantNE,
+    !param_primary_quadrants || game_mode == GAMEMODE_EDITOR || ((GetTileX() * map_y_edge) < (GetTileY() * map_x_edge)) && ((GetTileX() * map_y_edge + GetTileY() * map_x_edge) < (map_x_edge * map_y_edge))
+) {return;}
+
+/**
+ * Check if an industry is in the Southeast quadrant of the map.
+ * @return 1 if this is true, we're in Scenario Editor, or param_primary_quadrants disables this feature, else 0. 
+ */
+switch (FEAT_INDUSTRIES, SELF, IsInQuadrantSE,
+    !param_primary_quadrants || game_mode == GAMEMODE_EDITOR || ((GetTileX() * map_y_edge) < (GetTileY() * map_x_edge)) && ((GetTileX() * map_y_edge + GetTileY() * map_x_edge) > (map_x_edge * map_y_edge))
+) {return;}
+
+/**
+ * Check if an industry is in the Southwest quadrant of the map.
+ * @return 1 if this is true, we're in Scenario Editor, or param_primary_quadrants disables this feature, else 0. 
+ */
+switch (FEAT_INDUSTRIES, SELF, IsInQuadrantSW,
+    !param_primary_quadrants || game_mode == GAMEMODE_EDITOR || ((GetTileX() * map_y_edge) > (GetTileY() * map_x_edge)) && ((GetTileX() * map_y_edge + GetTileY() * map_x_edge) > (map_x_edge * map_y_edge))
+) {return;}
+
+/**
+ * Check if an industry is in the Northwest quadrant of the map.
+ * @return 1 if this is true, we're in Scenario Editor, or param_primary_quadrants disables this feature, else 0. 
+ */
+switch (FEAT_INDUSTRIES, SELF, IsInQuadrantNW,
+    !param_primary_quadrants || game_mode == GAMEMODE_EDITOR || ((GetTileX() * map_y_edge) > (GetTileY() * map_x_edge)) && ((GetTileX() * map_y_edge + GetTileY() * map_x_edge) < (map_x_edge * map_y_edge))
+) {return;}
+
+/* Empty production block. */
+produce (produce_none, [], [])
+# 1 "FBIS.pnml" 1
+# 1 "src/basics.nml" 1
 spriteset(tile_fstis_offshore) {
 	[0, 0, 64, 64, -31, -33, ANIM | NOCROP, "gfx/Fishing_Offshore.png"]
 }
@@ -1044,8 +1295,28 @@ item (FEAT_INDUSTRYTILES, ind_tile_concrete) {
 tilelayout industry_layout_concrete {
 	0,0:	ind_tile_concrete;
 }
+# 1 "FBIS.pnml" 1
 
-/* Coal Mine industry */
+# 1 "src/industry/coal.nml" 1
+
+tilelayout industry_layout_coal {
+							0,1:	ind_tile_dirt;	0,2:	ind_tile_dirt;	0,3:	ind_tile_dirt;
+	1,0:	ind_tile_dirt;	1,1:	ind_tile_dirt;	1,2:	ind_tile_dirt;	1,3:	ind_tile_dirt;	1,4:	ind_tile_dirt;
+	2,0:	ind_tile_dirt;	2,1:	ind_tile_dirt;	2,2:	ind_tile_dirt;	2,3:	ind_tile_dirt;	2,4:	ind_tile_dirt;
+	3,0:	ind_tile_dirt;	3,1:	ind_tile_dirt;	3,2:	ind_tile_dirt;	3,3:	ind_tile_dirt;	3,4:	ind_tile_dirt;
+							4,1:	ind_tile_dirt;	4,2:	ind_tile_dirt;	4,3:	ind_tile_dirt;
+}
+
+tilelayout industry_layout_coal_small {
+	0,0:	ind_tile_dirt;	0,1:	ind_tile_dirt;	0,2:	ind_tile_dirt;	0,3:	ind_tile_dirt;
+	1,0:	ind_tile_dirt;	1,1:	ind_tile_dirt;	1,2:	ind_tile_dirt;	1,3:	ind_tile_dirt;
+	2,0:	ind_tile_dirt;	2,1:	ind_tile_dirt;	2,2:	ind_tile_dirt;	2,3:	ind_tile_dirt;
+}
+
+switch (FEAT_INDUSTRIES, SELF, loc_check_coal, IsInQuadrantN() && IndustryElevationCheck(4,255)) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_PRIMARY);}
+switch (FEAT_INDUSTRIES, SELF, loc_check_coal_small, !IsInQuadrantN() && IndustryElevationCheck(4,255)) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_PRIMARY);}
+
+/* COAL MINE */
 item (FEAT_INDUSTRIES, industry_coal, 0) {
 	property {
         substitute: 0;
@@ -1060,13 +1331,58 @@ item (FEAT_INDUSTRIES, industry_coal, 0) {
         prob_in_game: 0;
 		fund_cost_multiplier: 1;
 		layouts: [
-			industry_layout_dirt,
+			industry_layout_coal,
 		];
+	}
+	graphics {
+        location_check: loc_check_coal;
 	}
 }
 
-/* Iron Mine industry */
-item (FEAT_INDUSTRIES, industry_iore, 1) {
+item (FEAT_INDUSTRIES, industry_coal_small, 1) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 1;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("COAL",2),accept_cargo("ENSP")];
+		name: string(STR_INDUSTRY_COAL_SMALL);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_COAL));
+        prob_map_gen: 5; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_coal_small,
+		];
+	}
+	graphics {
+        location_check: loc_check_coal_small;
+	}
+}
+# 1 "FBIS.pnml" 1
+# 1 "src/industry/iore.nml" 1
+
+tilelayout industry_layout_iore {
+							0,1:	ind_tile_dirt;	0,2:	ind_tile_dirt;	0,3:	ind_tile_dirt;
+	1,0:	ind_tile_dirt;	1,1:	ind_tile_dirt;	1,2:	ind_tile_dirt;	1,3:	ind_tile_dirt;	1,4:	ind_tile_dirt;
+	2,0:	ind_tile_dirt;	2,1:	ind_tile_dirt;	2,2:	ind_tile_dirt;	2,3:	ind_tile_dirt;	2,4:	ind_tile_dirt;
+	3,0:	ind_tile_dirt;	3,1:	ind_tile_dirt;	3,2:	ind_tile_dirt;	3,3:	ind_tile_dirt;	3,4:	ind_tile_dirt;
+							4,1:	ind_tile_dirt;	4,2:	ind_tile_dirt;	4,3:	ind_tile_dirt;
+}
+
+tilelayout industry_layout_iore_small {
+	0,0:	ind_tile_dirt;	0,1:	ind_tile_dirt;	0,2:	ind_tile_dirt;
+	1,0:	ind_tile_dirt;	1,1:	ind_tile_dirt;	1,2:	ind_tile_dirt;
+	2,0:	ind_tile_dirt;	2,1:	ind_tile_dirt;	2,2:	ind_tile_dirt;
+	3,0:	ind_tile_dirt;	3,1:	ind_tile_dirt;	3,2:	ind_tile_dirt;
+}
+
+switch (FEAT_INDUSTRIES, SELF, loc_check_iore, IsInQuadrantS() && IndustryElevationCheck(4,255)) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_PRIMARY);}
+switch (FEAT_INDUSTRIES, SELF, loc_check_iore_small, !IsInQuadrantS() && IndustryElevationCheck(4,255)) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_PRIMARY);}
+
+/* IRON MINE */
+item (FEAT_INDUSTRIES, industry_iore, 2) {
 	property {
         substitute: 0;
         override: 0;
@@ -1080,33 +1396,115 @@ item (FEAT_INDUSTRIES, industry_iore, 1) {
         prob_in_game: 0;
 		fund_cost_multiplier: 1;
 		layouts: [
-			industry_layout_dirt,
+			industry_layout_iore,
 		];
+	}
+	graphics {
+        location_check: loc_check_iore;
 	}
 }
 
-/* Forestry industry */
-item (FEAT_INDUSTRIES, industry_wood, 2) {
+item (FEAT_INDUSTRIES, industry_iore_small, 3) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 55;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("IORE",2),accept_cargo("ENSP")];
+		name: string(STR_INDUSTRY_IORE_SMALL);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_IORE));
+        prob_map_gen: 5; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_iore_small,
+		];
+	}
+	graphics {
+        location_check: loc_check_iore_small;
+	}
+}
+# 1 "FBIS.pnml" 1
+# 1 "src/industry/wood.nml" 1
+
+tilelayout industry_layout_wood {
+	0,0:	ind_tile_dirt;	0,1:	ind_tile_dirt;	0,2:	ind_tile_dirt;	0,3:	ind_tile_dirt;	0,4:	ind_tile_dirt;
+	1,0:	ind_tile_dirt;	1,1:	ind_tile_dirt;	1,2:	ind_tile_dirt;	1,3:	ind_tile_dirt;	1,4:	ind_tile_dirt;
+	2,0:	ind_tile_dirt;	2,1:	ind_tile_dirt;	2,2:	ind_tile_dirt;	2,3:	ind_tile_dirt;	2,4:	ind_tile_dirt;
+	3,0:	ind_tile_dirt;	3,1:	ind_tile_dirt;	3,2:	ind_tile_dirt;	3,3:	ind_tile_dirt;	3,4:	ind_tile_dirt;
+	4,0:	ind_tile_dirt;																			4,4:	ind_tile_dirt;
+}
+
+tilelayout industry_layout_wood_small {
+	0,0:	ind_tile_dirt;	0,1:	ind_tile_dirt;	0,2:	ind_tile_dirt;
+	1,0:	ind_tile_dirt;	1,1:	ind_tile_dirt;	1,2:	ind_tile_dirt;
+	2,0:	ind_tile_dirt;
+}
+
+switch (FEAT_INDUSTRIES, SELF, loc_check_wood, IsInQuadrantE() && IndustryElevationCheck(2,255)) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_PRIMARY);}
+switch (FEAT_INDUSTRIES, SELF, loc_check_wood_small, !IsInQuadrantE() && IndustryElevationCheck(2,255)) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_PRIMARY);}
+
+/* FOREST */
+item (FEAT_INDUSTRIES, industry_wood, 4) {
 	property {
         substitute: 0;
         override: 0;
         map_colour: 83;
 		life_type: IND_LIFE_TYPE_BLACK_HOLE;
 		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
-        cargo_types: [produce_cargo("WOOD",8),accept_cargo("FMSP")];
+        cargo_types: [produce_cargo("WOOD",8),accept_cargo("ENSP")];
 		name: string(STR_INDUSTRY_WOOD);
 		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_WOOD));
         prob_map_gen: 10; // Account for difficulty of finding suitable locatiom
         prob_in_game: 0;
 		fund_cost_multiplier: 1;
 		layouts: [
-			industry_layout_dirt,
+			industry_layout_wood,
 		];
+	}
+	graphics {
+        location_check: loc_check_wood;
 	}
 }
 
-/* Orchard industry */
-item (FEAT_INDUSTRIES, industry_frut, 3) {
+item (FEAT_INDUSTRIES, industry_wood_small, 5) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 83;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("WOOD",2),accept_cargo("ENSP")];
+		name: string(STR_INDUSTRY_WOOD_SMALL);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_WOOD));
+        prob_map_gen: 5; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_wood_small,
+		];
+	}
+	graphics {
+        location_check: loc_check_wood_small;
+	}
+}
+# 1 "FBIS.pnml" 1
+# 1 "src/industry/frut.nml" 1
+
+tilelayout industry_layout_frut {
+	0,0:	ind_tile_dirt;	0,1:	ind_tile_dirt;	0,2:	ind_tile_dirt;	0,3:	ind_tile_dirt;
+	1,0:	ind_tile_dirt;	1,1:	ind_tile_dirt;	1,2:	ind_tile_dirt;	1,3:	ind_tile_dirt;
+	2,0:	ind_tile_dirt;	2,1:	ind_tile_dirt;	2,2:	ind_tile_dirt;	2,3:	ind_tile_dirt;
+	
+	4,0:	ind_tile_dirt;							4,2:	ind_tile_dirt;	4,3:	ind_tile_dirt;
+	5,0:	ind_tile_dirt;							5,2:	ind_tile_dirt;	5,3:	ind_tile_dirt;
+}
+
+switch (FEAT_INDUSTRIES, SELF, loc_check_frut, IsTown() && IndustryElevationCheck(2,255)) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_PRIMARY);}
+
+/* ORCHARD */
+item (FEAT_INDUSTRIES, industry_frut, 6) {
 	property {
         substitute: 0;
         override: 0;
@@ -1120,13 +1518,28 @@ item (FEAT_INDUSTRIES, industry_frut, 3) {
         prob_in_game: 0;
 		fund_cost_multiplier: 1;
 		layouts: [
-			industry_layout_dirt,
+			industry_layout_frut,
 		];
 	}
+	graphics {
+        location_check: loc_check_frut;
+	}
+}
+# 1 "FBIS.pnml" 1
+# 1 "src/industry/oil.nml" 1
+
+tilelayout industry_layout_oil_ {
+	0,0:	ind_tile_dirt;							0,2:	ind_tile_dirt;							0,4:	ind_tile_dirt;
+	
+							2,1:	ind_tile_dirt;							2,3:	ind_tile_dirt;
+	
+	4,0:	ind_tile_dirt;							4,2:	ind_tile_dirt;							4,4:	ind_tile_dirt;
 }
 
-/* Oil Well industry */
-item (FEAT_INDUSTRIES, industry_oil_, 4) {
+switch (FEAT_INDUSTRIES, SELF, loc_check_oil_, IndustryElevationCheck(2,255)) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_PRIMARY);}
+
+/* OIL WELLS */
+item (FEAT_INDUSTRIES, industry_oil_, 7) {
 	property {
         substitute: 0;
         override: 0;
@@ -1140,13 +1553,28 @@ item (FEAT_INDUSTRIES, industry_oil_, 4) {
         prob_in_game: 0;
 		fund_cost_multiplier: 1;
 		layouts: [
-			industry_layout_dirt,
+			industry_layout_oil_,
 		];
 	}
+	graphics {
+        location_check: loc_check_oil_;
+	}
+}
+# 1 "FBIS.pnml" 1
+# 1 "src/industry/wdpr.nml" 1
+
+tilelayout industry_layout_wdpr {
+	0,0:	ind_tile_dirt;	0,1:	ind_tile_dirt;	0,2:	ind_tile_dirt;
+	1,0:	ind_tile_dirt;	1,1:	ind_tile_dirt;	1,2:	ind_tile_dirt;
+	2,0:	ind_tile_dirt;	2,1:	ind_tile_dirt;	2,2:	ind_tile_dirt;
+	3,0:	ind_tile_dirt;	3,1:	ind_tile_dirt;	3,2:	ind_tile_dirt;
+	4,0:	ind_tile_dirt;	4,1:	ind_tile_dirt;	4,2:	ind_tile_dirt;
 }
 
-/* Sawmill industry */
-item (FEAT_INDUSTRIES, industry_wdpr, 5) {
+switch (FEAT_INDUSTRIES, SELF, loc_check_wdpr, IsTown() && IsNearTown() && CityHasNoSecondaryIndustries()) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_SECONDARY);}
+
+/* SAWMILL */
+item (FEAT_INDUSTRIES, industry_wdpr, 8) {
 	property {
         substitute: 0;
         override: 0;
@@ -1160,13 +1588,28 @@ item (FEAT_INDUSTRIES, industry_wdpr, 5) {
         prob_in_game: 0;
 		fund_cost_multiplier: 1;
 		layouts: [
-			industry_layout_dirt,
+			industry_layout_wdpr,
 		];
 	}
+	graphics {
+        location_check: loc_check_wdpr;
+	}
+}
+# 1 "FBIS.pnml" 1
+# 1 "src/industry/slag.nml" 1
+
+tilelayout industry_layout_slag {
+	0,0:	ind_tile_dirt;	0,1:	ind_tile_dirt;	0,2:	ind_tile_dirt;
+	1,0:	ind_tile_dirt;	1,1:	ind_tile_dirt;	1,2:	ind_tile_dirt;
+	2,0:	ind_tile_dirt;	2,1:	ind_tile_dirt;	2,2:	ind_tile_dirt;
+	3,0:	ind_tile_dirt;	3,1:	ind_tile_dirt;	3,2:	ind_tile_dirt;
+	4,0:	ind_tile_dirt;	4,1:	ind_tile_dirt;	4,2:	ind_tile_dirt;
 }
 
-/* Slag Grinding Plant industry */
-item (FEAT_INDUSTRIES, industry_slag, 6) {
+switch (FEAT_INDUSTRIES, SELF, loc_check_slag, IsTown() && IsNearTown() && CityHasNoSecondaryIndustries()) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_SECONDARY);}
+
+/* SLAG GRINDING PLANT */
+item (FEAT_INDUSTRIES, industry_slag, 9) {
 	property {
         substitute: 0;
         override: 0;
@@ -1180,13 +1623,28 @@ item (FEAT_INDUSTRIES, industry_slag, 6) {
         prob_in_game: 0;
 		fund_cost_multiplier: 1;
 		layouts: [
-			industry_layout_dirt,
+			industry_layout_slag,
 		];
 	}
+	graphics {
+        location_check: loc_check_slag;
+	}
+}
+# 1 "FBIS.pnml" 1
+# 1 "src/industry/coke.nml" 1
+
+tilelayout industry_layout_coke {
+	0,0:	ind_tile_dirt;	0,1:	ind_tile_dirt;	0,2:	ind_tile_dirt;
+	1,0:	ind_tile_dirt;	1,1:	ind_tile_dirt;	1,2:	ind_tile_dirt;
+	2,0:	ind_tile_dirt;	2,1:	ind_tile_dirt;	2,2:	ind_tile_dirt;
+	3,0:	ind_tile_dirt;	3,1:	ind_tile_dirt;	3,2:	ind_tile_dirt;
+	4,0:	ind_tile_dirt;	4,1:	ind_tile_dirt;	4,2:	ind_tile_dirt;
 }
 
-/* Coke Oven industry */
-item (FEAT_INDUSTRIES, industry_coke, 7) {
+switch (FEAT_INDUSTRIES, SELF, loc_check_coke, IsTown() && IsNearTown() && CityHasNoSecondaryIndustries()) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_SECONDARY);}
+
+/* COKE OVEN */
+item (FEAT_INDUSTRIES, industry_coke, 10) {
 	property {
         substitute: 0;
         override: 0;
@@ -1200,13 +1658,28 @@ item (FEAT_INDUSTRIES, industry_coke, 7) {
         prob_in_game: 0;
 		fund_cost_multiplier: 1;
 		layouts: [
-			industry_layout_dirt,
+			industry_layout_coke,
 		];
 	}
+	graphics {
+        location_check: loc_check_coke;
+	}
+}
+# 1 "FBIS.pnml" 1
+# 1 "src/industry/stel.nml" 1
+
+tilelayout industry_layout_stel {
+	0,0:	ind_tile_dirt;	0,1:	ind_tile_dirt;	0,2:	ind_tile_dirt;
+	1,0:	ind_tile_dirt;	1,1:	ind_tile_dirt;	1,2:	ind_tile_dirt;
+	2,0:	ind_tile_dirt;	2,1:	ind_tile_dirt;	2,2:	ind_tile_dirt;
+	3,0:	ind_tile_dirt;	3,1:	ind_tile_dirt;	3,2:	ind_tile_dirt;
+//	4,0:	ind_tile_dirt;	4,1:	ind_tile_dirt;	4,2:	ind_tile_dirt;
 }
 
-/* Steel Mill industry */
-item (FEAT_INDUSTRIES, industry_stel, 8) {
+switch (FEAT_INDUSTRIES, SELF, loc_check_stel, IsCity() && IsNearTown() && CityHasNoSecondaryIndustries()) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_SECONDARY);}
+
+/* STEEL MILL */
+item (FEAT_INDUSTRIES, industry_stel, 11) {
 	property {
         substitute: 0;
         override: 0;
@@ -1220,33 +1693,36 @@ item (FEAT_INDUSTRIES, industry_stel, 8) {
         prob_in_game: 0;
 		fund_cost_multiplier: 1;
 		layouts: [
-			industry_layout_dirt,
+			industry_layout_stel,
 		];
 	}
-}
-
-/* Pasture industry */
-item (FEAT_INDUSTRIES, industry_lvst, 10) {
-	property {
-        substitute: 0;
-        override: 0;
-        map_colour: 168;
-		life_type: IND_LIFE_TYPE_BLACK_HOLE;
-		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
-        cargo_types: [produce_cargo("MILK",4),produce_cargo("LVST",4),produce_cargo("WOOL",4),accept_cargo("FMSP")];
-		name: string(STR_INDUSTRY_LVST);
-		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_LVST));
-        prob_map_gen: 10; // Account for difficulty of finding suitable locatiom
-        prob_in_game: 0;
-		fund_cost_multiplier: 1;
-		layouts: [
-			industry_layout_empty,
-		];
+	graphics {
+        location_check: loc_check_stel;
 	}
 }
+# 1 "FBIS.pnml" 1
+# 1 "src/industry/clay.nml" 1
 
-/* Quarry industry */
-item (FEAT_INDUSTRIES, industry_clay, 11) {
+tilelayout industry_layout_clay {
+	0,0:	ind_tile_dirt;	0,1:	ind_tile_dirt;	0,2:	ind_tile_dirt;
+	1,0:	ind_tile_dirt;	1,1:	ind_tile_dirt;	1,2:	ind_tile_dirt;
+	2,0:	ind_tile_dirt;	2,1:	ind_tile_dirt;	2,2:	ind_tile_dirt;
+	3,0:	ind_tile_dirt;	3,1:	ind_tile_dirt;	3,2:	ind_tile_dirt;
+	4,0:	ind_tile_dirt;	4,1:	ind_tile_dirt;	4,2:	ind_tile_dirt;
+}
+
+tilelayout industry_layout_clay_small {
+	0,0:	ind_tile_dirt;	0,1:	ind_tile_dirt;	0,2:	ind_tile_dirt;
+	1,0:	ind_tile_dirt;	1,1:	ind_tile_dirt;	1,2:	ind_tile_dirt;
+	2,0:	ind_tile_dirt;	2,1:	ind_tile_dirt;	2,2:	ind_tile_dirt;
+	3,0:	ind_tile_dirt;	3,1:	ind_tile_dirt;	3,2:	ind_tile_dirt;
+}
+
+switch (FEAT_INDUSTRIES, SELF, loc_check_clay, IsInQuadrantW() && IndustryElevationCheck(4,255)) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_PRIMARY);}
+switch (FEAT_INDUSTRIES, SELF, loc_check_clay_small, !IsInQuadrantW() && IndustryElevationCheck(4,255)) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_PRIMARY);}
+
+/* QUARRY */
+item (FEAT_INDUSTRIES, industry_clay, 12) {
 	property {
         substitute: 0;
         override: 0;
@@ -1260,19 +1736,54 @@ item (FEAT_INDUSTRIES, industry_clay, 11) {
         prob_in_game: 0;
 		fund_cost_multiplier: 1;
 		layouts: [
-			industry_layout_empty,
+			industry_layout_clay,
 		];
+	}
+	graphics {
+        location_check: loc_check_clay;
 	}
 }
 
-/* Farm industry */
-item (FEAT_INDUSTRIES, industry_grai, 12) {
+item (FEAT_INDUSTRIES, industry_clay_small, 13) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 194;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("CLAY",3),produce_cargo("SAND",3),accept_cargo("ENSP")];
+		name: string(STR_INDUSTRY_CLAY_SMALL);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_CLAY));
+        prob_map_gen: 5; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_clay_small,
+		];
+	}
+	graphics {
+        location_check: loc_check_clay_small;
+	}
+}
+# 1 "FBIS.pnml" 1
+# 1 "src/industry/grai.nml" 1
+
+tilelayout industry_layout_grai {
+	0,0:	ind_tile_dirt;
+	1,0:	ind_tile_dirt;
+	2,0:	ind_tile_dirt;							2,2:	ind_tile_dirt;
+}
+
+switch (FEAT_INDUSTRIES, SELF, loc_check_grai, IsTown() && IndustryElevationCheck(2,255)) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_PRIMARY);}
+
+/* FARM */
+item (FEAT_INDUSTRIES, industry_grai, 14) {
 	property {
         substitute: 0;
         override: 0;
         map_colour: 85;
 		life_type: IND_LIFE_TYPE_BLACK_HOLE;
-		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS,IND_FLAG_PLANT_FIELDS_WHEN_BUILT,IND_FLAG_PLANT_FIELDS_PERIODICALLY);
         cargo_types: [produce_cargo("GRAI",8),accept_cargo("FMSP")];
 		name: string(STR_INDUSTRY_GRAI);
 		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_GRAI));
@@ -1280,13 +1791,61 @@ item (FEAT_INDUSTRIES, industry_grai, 12) {
         prob_in_game: 0;
 		fund_cost_multiplier: 1;
 		layouts: [
-			industry_layout_empty,
+			industry_layout_grai,
 		];
 	}
+	graphics {
+        location_check: loc_check_grai;
+	}
+}
+# 1 "FBIS.pnml" 1
+# 1 "src/industry/lvst.nml" 1
+
+tilelayout industry_layout_lvst {
+	0,0:	ind_tile_dirt;
+	1,0:	ind_tile_dirt;
+	3,0:	ind_tile_dirt;	3,1:	ind_tile_dirt;
 }
 
-/* Dairy industry */
-item (FEAT_INDUSTRIES, industry_milk, 20) {
+switch (FEAT_INDUSTRIES, SELF, loc_check_lvst, IsTown() && IndustryElevationCheck(2,255)) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_PRIMARY);}
+
+/* PASTURE */
+item (FEAT_INDUSTRIES, industry_lvst, 15) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 168;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("MILK",4),produce_cargo("LVST",4),produce_cargo("WOOL",4),accept_cargo("FMSP")];
+		name: string(STR_INDUSTRY_LVST);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_LVST));
+        prob_map_gen: 10; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_lvst,
+		];
+	}
+	graphics {
+        location_check: loc_check_lvst;
+	}
+}
+# 1 "FBIS.pnml" 1
+# 1 "src/industry/milk.nml" 1
+
+tilelayout industry_layout_milk {
+	0,0:	ind_tile_concrete;	0,1:	ind_tile_concrete;
+	1,0:	ind_tile_concrete;	1,1:	ind_tile_concrete;
+	2,0:	ind_tile_concrete;	2,1:	ind_tile_concrete;
+	//3,0:	ind_tile_concrete;	3,1:	ind_tile_concrete;
+	//4,0:	ind_tile_concrete;	4,1:	ind_tile_concrete;
+}
+
+switch (FEAT_INDUSTRIES, SELF, loc_check_milk, IsCity() && IsInTown() && CityHasNoSecondaryIndustries()) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_SECONDARY);}
+
+/* DAIRY */
+item (FEAT_INDUSTRIES, industry_milk, 16) {
 	property {
         substitute: 0;
         override: 0;
@@ -1300,13 +1859,28 @@ item (FEAT_INDUSTRIES, industry_milk, 20) {
         prob_in_game: 0;
 		fund_cost_multiplier: 1;
 		layouts: [
-			industry_layout_concrete,
+			industry_layout_milk,
 		];
 	}
+	graphics {
+        location_check: loc_check_milk;
+	}
+}
+# 1 "FBIS.pnml" 1
+# 1 "src/industry/meat.nml" 1
+
+tilelayout industry_layout_meat {
+	0,0:	ind_tile_concrete;	0,1:	ind_tile_concrete;	0,2:	ind_tile_concrete;
+	1,0:	ind_tile_concrete;	1,1:	ind_tile_concrete;	1,2:	ind_tile_concrete;
+	2,0:	ind_tile_concrete;	2,1:	ind_tile_concrete;	2,2:	ind_tile_concrete;
+	3,0:	ind_tile_concrete;	3,1:	ind_tile_concrete;	3,2:	ind_tile_concrete;
+	4,0:	ind_tile_concrete;	4,1:	ind_tile_concrete;	4,2:	ind_tile_concrete;
 }
 
-/* Stockyard industry */
-item (FEAT_INDUSTRIES, industry_meat, 21) {
+switch (FEAT_INDUSTRIES, SELF, loc_check_meat, IsCity() && IsInTown() && CityHasNoSecondaryIndustries()) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_SECONDARY);}
+
+/* STOCKYARD */
+item (FEAT_INDUSTRIES, industry_meat, 17) {
 	property {
         substitute: 0;
         override: 0;
@@ -1320,13 +1894,28 @@ item (FEAT_INDUSTRIES, industry_meat, 21) {
         prob_in_game: 0;
 		fund_cost_multiplier: 1;
 		layouts: [
-			industry_layout_concrete,
+			industry_layout_meat,
 		];
 	}
+	graphics {
+        location_check: loc_check_meat;
+	}
+}
+# 1 "FBIS.pnml" 1
+# 1 "src/industry/mngr.nml" 1
+
+tilelayout industry_layout_mngr {
+	0,0:	ind_tile_concrete;	0,1:	ind_tile_concrete;	0,2:	ind_tile_concrete;
+	1,0:	ind_tile_concrete;	1,1:	ind_tile_concrete;	1,2:	ind_tile_concrete;
+	2,0:	ind_tile_concrete;	2,1:	ind_tile_concrete;	2,2:	ind_tile_concrete;
+	3,0:	ind_tile_concrete;	3,1:	ind_tile_concrete;	3,2:	ind_tile_concrete;
+	//4,0:	ind_tile_concrete;	4,1:	ind_tile_concrete;	4,2:	ind_tile_concrete;
 }
 
-/* Fishmonger industry */
-item (FEAT_INDUSTRIES, industry_mngr, 22) {
+switch (FEAT_INDUSTRIES, SELF, loc_check_mngr, IsInTown() && CityHasNoSecondaryIndustries() && IndustryElevationCheck(0,4)) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_SECONDARY);}
+
+/* FISHMONGER */
+item (FEAT_INDUSTRIES, industry_mngr, 18) {
 	property {
         substitute: 0;
         override: 0;
@@ -1340,13 +1929,28 @@ item (FEAT_INDUSTRIES, industry_mngr, 22) {
         prob_in_game: 0;
 		fund_cost_multiplier: 1;
 		layouts: [
-			industry_layout_concrete,
+			industry_layout_mngr,
 		];
 	}
+	graphics {
+        location_check: loc_check_mngr;
+	}
+}
+# 1 "FBIS.pnml" 1
+# 1 "src/industry/lmbr.nml" 1
+
+tilelayout industry_layout_lmbr {
+	0,0:	ind_tile_concrete;	0,1:	ind_tile_concrete;
+	1,0:	ind_tile_concrete;	1,1:	ind_tile_concrete;
+	2,0:	ind_tile_concrete;	2,1:	ind_tile_concrete;
+	3,0:	ind_tile_concrete;	3,1:	ind_tile_concrete;
+	4,0:	ind_tile_concrete;	4,1:	ind_tile_concrete;
 }
 
-/* Lumberyard industry */
-item (FEAT_INDUSTRIES, industry_lmbr, 23) {
+switch (FEAT_INDUSTRIES, SELF, loc_check_lmbr, IsCity() && IsNearTown() && CityHasNoSecondaryIndustries()) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_SECONDARY);}
+
+/* LUMBERYARD */
+item (FEAT_INDUSTRIES, industry_lmbr, 19) {
 	property {
         substitute: 0;
         override: 0;
@@ -1360,13 +1964,32 @@ item (FEAT_INDUSTRIES, industry_lmbr, 23) {
         prob_in_game: 0;
 		fund_cost_multiplier: 1;
 		layouts: [
-			industry_layout_concrete,
+			industry_layout_lmbr,
 		];
 	}
+	graphics {
+        location_check: loc_check_lmbr;
+	}
+}
+# 1 "FBIS.pnml" 1
+# 1 "src/industry/assy.nml" 1
+
+tilelayout industry_layout_assy {
+	0,0:	ind_tile_concrete;	0,1:	ind_tile_concrete;	0,2:	ind_tile_concrete;
+	1,0:	ind_tile_concrete;	1,1:	ind_tile_concrete;	1,2:	ind_tile_concrete;
+	2,0:	ind_tile_concrete;	2,1:	ind_tile_concrete;	2,2:	ind_tile_concrete;
+	3,0:	ind_tile_concrete;	3,1:	ind_tile_concrete;	3,2:	ind_tile_concrete;
+	4,0:	ind_tile_concrete;	4,1:	ind_tile_concrete;	4,2:	ind_tile_concrete;
+	5,0:	ind_tile_concrete;	5,1:	ind_tile_concrete;	5,2:	ind_tile_concrete;
+	6,0:	ind_tile_concrete;	6,1:	ind_tile_concrete;	6,2:	ind_tile_concrete;
+	7,0:	ind_tile_concrete;	7,1:	ind_tile_concrete;	7,2:	ind_tile_concrete;
+	8,0:	ind_tile_concrete;	8,1:	ind_tile_concrete;	8,2:	ind_tile_concrete;
 }
 
-/* Assembly Plant industry */
-item (FEAT_INDUSTRIES, industry_assy, 24) {
+switch (FEAT_INDUSTRIES, SELF, loc_check_assy, IsCity() && IsInTown() && CityHasNoSecondaryIndustries()) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_SECONDARY);}
+
+/* ASSEMBLY PLANT */
+item (FEAT_INDUSTRIES, industry_assy, 20) {
 	property {
         substitute: 0;
         override: 0;
@@ -1380,13 +2003,26 @@ item (FEAT_INDUSTRIES, industry_assy, 24) {
         prob_in_game: 0;
 		fund_cost_multiplier: 1;
 		layouts: [
-			industry_layout_concrete,
+			industry_layout_assy,
 		];
 	}
+	graphics {
+        location_check: loc_check_assy;
+	}
+}
+# 1 "FBIS.pnml" 1
+# 1 "src/industry/petr.nml" 1
+
+tilelayout industry_layout_petr {
+	0,0:	ind_tile_concrete;	0,1:	ind_tile_concrete;	0,2:	ind_tile_concrete;	0,3:	ind_tile_concrete;	0,4:	ind_tile_concrete;
+	1,0:	ind_tile_concrete;	1,1:	ind_tile_concrete;	1,2:	ind_tile_concrete;	1,3:	ind_tile_concrete;	1,4:	ind_tile_concrete;
+	2,0:	ind_tile_concrete;	2,1:	ind_tile_concrete;	2,2:	ind_tile_concrete;	2,3:	ind_tile_concrete;	2,4:	ind_tile_concrete;
 }
 
-/* Oil Refinery industry */
-item (FEAT_INDUSTRIES, industry_petr, 25) {
+switch (FEAT_INDUSTRIES, SELF, loc_check_petr, IsCity() && IsNearTown() && CityHasNoSecondaryIndustries()) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_SECONDARY);}
+
+/* REFINERY */
+item (FEAT_INDUSTRIES, industry_petr, 21) {
 	property {
         substitute: 0;
         override: 0;
@@ -1400,33 +2036,60 @@ item (FEAT_INDUSTRIES, industry_petr, 25) {
         prob_in_game: 0;
 		fund_cost_multiplier: 1;
 		layouts: [
-			industry_layout_concrete,
+			industry_layout_petr,
 		];
 	}
+	graphics {
+        location_check: loc_check_petr;
+	}
+}
+# 1 "FBIS.pnml" 1
+# 1 "src/industry/powr.nml" 1
+tilelayout industry_layout_powr {
+	0,0:	ind_tile_concrete;	0,1:	ind_tile_concrete;	0,2:	ind_tile_concrete;
+	1,0:	ind_tile_concrete;	1,1:	ind_tile_concrete;	1,2:	ind_tile_concrete;
+	2,0:	ind_tile_concrete;	2,1:	ind_tile_concrete;	2,2:	ind_tile_concrete;
+	3,0:	ind_tile_concrete;	3,1:	ind_tile_concrete;	3,2:	ind_tile_concrete;
+	4,0:	ind_tile_concrete;	4,1:	ind_tile_concrete;	4,2:	ind_tile_concrete;
 }
 
-/* Power Plant industry */
-item (FEAT_INDUSTRIES, industry_powr, 26) {
+switch (FEAT_INDUSTRIES, SELF, loc_check_powr, IsCity() && IsInTown() && CityHasNoSecondaryIndustries()) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_SECONDARY);}
+
+/* POWER PLANT */
+item (FEAT_INDUSTRIES, industry_powr, 22) {
 	property {
         substitute: 0;
         override: 0;
         map_colour: 181;
 		life_type: IND_LIFE_TYPE_BLACK_HOLE;
 		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
-        cargo_types: [accept_cargo("PETR")];
+        cargo_types: [accept_cargo("PETR"),accept_cargo("COAL")];
 		name: string(STR_INDUSTRY_POWR);
 		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_POWR));
         prob_map_gen: 10; // Account for difficulty of finding suitable locatiom
         prob_in_game: 0;
 		fund_cost_multiplier: 1;
 		layouts: [
-			industry_layout_concrete,
+			industry_layout_powr,
 		];
 	}
+	graphics {
+        location_check: loc_check_powr;
+	}
+}
+# 1 "FBIS.pnml" 1
+# 1 "src/industry/wool.nml" 1
+
+tilelayout industry_layout_wool {
+	0,0:	ind_tile_cobble;	0,1:	ind_tile_cobble;	0,2:	ind_tile_cobble;
+	1,0:	ind_tile_cobble;	1,1:	ind_tile_cobble;	1,2:	ind_tile_cobble;
+	2,0:	ind_tile_cobble;	2,1:	ind_tile_cobble;	2,2:	ind_tile_cobble;
 }
 
-/* Textile Mill industry */
-item (FEAT_INDUSTRIES, industry_wool, 30) {
+switch (FEAT_INDUSTRIES, SELF, loc_check_wool, IsCity() && IsInTown() && CityHasNoSecondaryIndustries()) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_SECONDARY);}
+
+/* TEXTILE MILL */
+item (FEAT_INDUSTRIES, industry_wool, 23) {
 	property {
         substitute: 0;
         override: 0;
@@ -1440,13 +2103,26 @@ item (FEAT_INDUSTRIES, industry_wool, 30) {
         prob_in_game: 0;
 		fund_cost_multiplier: 1;
 		layouts: [
-			industry_layout_cobble,
+			industry_layout_wool,
 		];
 	}
+	graphics {
+        location_check: loc_check_wool;
+	}
+}
+# 1 "FBIS.pnml" 1
+# 1 "src/industry/bred.nml" 1
+
+tilelayout industry_layout_bred {
+	0,0:	ind_tile_cobble;	0,1:	ind_tile_cobble;	0,2:	ind_tile_cobble;
+	1,0:	ind_tile_cobble;	1,1:	ind_tile_cobble;	1,2:	ind_tile_cobble;
+	2,0:	ind_tile_cobble;	2,1:	ind_tile_cobble;	2,2:	ind_tile_cobble;
 }
 
-/* Flour Mill industry */
-item (FEAT_INDUSTRIES, industry_bred, 31) {
+switch (FEAT_INDUSTRIES, SELF, loc_check_bred, CityHasNoSecondaryIndustries() && IsInTown()) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_SECONDARY);}
+
+/* FLOUR MILL */
+item (FEAT_INDUSTRIES, industry_bred, 24) {
 	property {
         substitute: 0;
         override: 0;
@@ -1460,13 +2136,26 @@ item (FEAT_INDUSTRIES, industry_bred, 31) {
         prob_in_game: 0;
 		fund_cost_multiplier: 1;
 		layouts: [
-			industry_layout_cobble,
+			industry_layout_bred,
 		];
 	}
+	graphics {
+        location_check: loc_check_bred;
+	}
+}
+# 1 "FBIS.pnml" 1
+# 1 "src/industry/beer.nml" 1
+
+tilelayout industry_layout_beer {
+	0,0:	ind_tile_cobble;	0,1:	ind_tile_cobble;
+	1,0:	ind_tile_cobble;	1,1:	ind_tile_cobble;
+	2,0:	ind_tile_cobble;	2,1:	ind_tile_cobble;
 }
 
-/* Brewery industry */
-item (FEAT_INDUSTRIES, industry_beer, 32) {
+switch (FEAT_INDUSTRIES, SELF, loc_check_beer, CityHasNoSecondaryIndustries() && IsInTown()) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_SECONDARY);}
+
+/* BREWERY */
+item (FEAT_INDUSTRIES, industry_beer, 25) {
 	property {
         substitute: 0;
         override: 0;
@@ -1480,13 +2169,26 @@ item (FEAT_INDUSTRIES, industry_beer, 32) {
         prob_in_game: 0;
 		fund_cost_multiplier: 1;
 		layouts: [
-			industry_layout_cobble,
+			industry_layout_beer,
 		];
 	}
+	graphics {
+        location_check: loc_check_beer;
+	}
+}
+# 1 "FBIS.pnml" 1
+# 1 "src/industry/seat.nml" 1
+
+tilelayout industry_layout_seat {
+	0,0:	ind_tile_cobble;	0,1:	ind_tile_cobble;	0,2:	ind_tile_cobble;
+	1,0:	ind_tile_cobble;	1,1:	ind_tile_cobble;	1,2:	ind_tile_cobble;
+	2,0:	ind_tile_cobble;	2,1:	ind_tile_cobble;	2,2:	ind_tile_cobble;
 }
 
-/* Furniture Factory industry */
-item (FEAT_INDUSTRIES, industry_seat, 33) {
+switch (FEAT_INDUSTRIES, SELF, loc_check_seat, IsCity() && IsInTown() && CityHasNoSecondaryIndustries()) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_SECONDARY);}
+
+/* FURNITURE FACTORY */
+item (FEAT_INDUSTRIES, industry_seat, 26) {
 	property {
         substitute: 0;
         override: 0;
@@ -1500,13 +2202,27 @@ item (FEAT_INDUSTRIES, industry_seat, 33) {
         prob_in_game: 0;
 		fund_cost_multiplier: 1;
 		layouts: [
-			industry_layout_cobble,
+			industry_layout_seat,
 		];
 	}
+	graphics {
+        location_check: loc_check_seat;
+	}
+}
+# 1 "FBIS.pnml" 1
+# 1 "src/industry/glas.nml" 1
+
+tilelayout industry_layout_glas {
+	0,0:	ind_tile_cobble;	0,1:	ind_tile_cobble;	0,2:	ind_tile_cobble;	0,3:	ind_tile_cobble;
+	1,0:	ind_tile_cobble;	1,1:	ind_tile_cobble;	1,2:	ind_tile_cobble;	1,3:	ind_tile_cobble;
+	2,0:	ind_tile_cobble;	2,1:	ind_tile_cobble;	2,2:	ind_tile_cobble;	2,3:	ind_tile_cobble;
+	3,0:	ind_tile_cobble;	3,1:	ind_tile_cobble;	3,2:	ind_tile_cobble;	3,3:	ind_tile_cobble;
 }
 
-/* Glassworks industry */
-item (FEAT_INDUSTRIES, industry_glas, 34) {
+switch (FEAT_INDUSTRIES, SELF, loc_check_glas, IsTown() && IsInTown() && CityHasNoSecondaryIndustries()) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_SECONDARY);}
+
+/* FISHMONGER */
+item (FEAT_INDUSTRIES, industry_glas, 27) {
 	property {
         substitute: 0;
         override: 0;
@@ -1520,13 +2236,27 @@ item (FEAT_INDUSTRIES, industry_glas, 34) {
         prob_in_game: 0;
 		fund_cost_multiplier: 1;
 		layouts: [
-			industry_layout_cobble,
+			industry_layout_glas,
 		];
 	}
+	graphics {
+        location_check: loc_check_glas;
+	}
+}
+# 1 "FBIS.pnml" 1
+# 1 "src/industry/bdmt.nml" 1
+
+tilelayout industry_layout_bdmt {
+	0,0:	ind_tile_cobble;	0,1:	ind_tile_cobble;	0,2:	ind_tile_cobble;
+	1,0:	ind_tile_cobble;	1,1:	ind_tile_cobble;	1,2:	ind_tile_cobble;
+	2,0:	ind_tile_cobble;	2,1:	ind_tile_cobble;	2,2:	ind_tile_cobble;
+	3,0:	ind_tile_cobble;	3,1:	ind_tile_cobble;	3,2:	ind_tile_cobble;
 }
 
-/* Brickworks industry */
-item (FEAT_INDUSTRIES, industry_bdmt, 35) {
+switch (FEAT_INDUSTRIES, SELF, loc_check_bdmt, IsTown() && IsInTown() && CityHasNoSecondaryIndustries()) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_SECONDARY);}
+
+/* BRICKWORKS */
+item (FEAT_INDUSTRIES, industry_bdmt, 28) {
 	property {
         substitute: 0;
         override: 0;
@@ -1540,13 +2270,27 @@ item (FEAT_INDUSTRIES, industry_bdmt, 35) {
         prob_in_game: 0;
 		fund_cost_multiplier: 1;
 		layouts: [
-			industry_layout_cobble,
+			industry_layout_bdmt,
 		];
 	}
+	graphics {
+        location_check: loc_check_bdmt;
+	}
+}
+# 1 "FBIS.pnml" 1
+# 1 "src/industry/yard.nml" 1
+
+tilelayout industry_layout_yard {
+	0,0:	ind_tile_cobble;	0,1:	ind_tile_cobble;	0,2:	ind_tile_cobble;
+	1,0:	ind_tile_cobble;	1,1:	ind_tile_cobble;	1,2:	ind_tile_cobble;
+	2,0:	ind_tile_cobble;	2,1:	ind_tile_cobble;	2,2:	ind_tile_cobble;
+	3,0:	ind_tile_cobble;	3,1:	ind_tile_cobble;	3,2:	ind_tile_cobble;
 }
 
-/* Builder's Yard industry */
-item (FEAT_INDUSTRIES, industry_yard, 36) {
+switch (FEAT_INDUSTRIES, SELF, loc_check_yard, IsInTown() && CityHasNoSecondaryIndustries()) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_SECONDARY);}
+
+/* BUILDER'S YARD */
+item (FEAT_INDUSTRIES, industry_yard, 29) {
 	property {
         substitute: 0;
         override: 0;
@@ -1560,13 +2304,28 @@ item (FEAT_INDUSTRIES, industry_yard, 36) {
         prob_in_game: 0;
 		fund_cost_multiplier: 1;
 		layouts: [
-			industry_layout_cobble,
+			industry_layout_yard,
 		];
 	}
+	graphics {
+        location_check: loc_check_yard;
+	}
+}
+# 1 "FBIS.pnml" 1
+# 1 "src/industry/metl.nml" 1
+
+tilelayout industry_layout_metl {
+	0,0:	ind_tile_cobble;	0,1:	ind_tile_cobble;	0,2:	ind_tile_cobble;
+	1,0:	ind_tile_cobble;	1,1:	ind_tile_cobble;	1,2:	ind_tile_cobble;
+	2,0:	ind_tile_cobble;	2,1:	ind_tile_cobble;	2,2:	ind_tile_cobble;
+	3,0:	ind_tile_cobble;	3,1:	ind_tile_cobble;	3,2:	ind_tile_cobble;
+	4,0:	ind_tile_cobble;	4,1:	ind_tile_cobble;	4,2:	ind_tile_cobble;
 }
 
-/* Ironworks industry */
-item (FEAT_INDUSTRIES, industry_metl, 37) {
+switch (FEAT_INDUSTRIES, SELF, loc_check_metl, IsCity() && IsInTown() && CityHasNoSecondaryIndustries()) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_SECONDARY);}
+
+/* IRONWORKS */
+item (FEAT_INDUSTRIES, industry_metl, 30) {
 	property {
         substitute: 0;
         override: 0;
@@ -1580,13 +2339,28 @@ item (FEAT_INDUSTRIES, industry_metl, 37) {
         prob_in_game: 0;
 		fund_cost_multiplier: 1;
 		layouts: [
-			industry_layout_cobble,
+			industry_layout_metl,
 		];
 	}
+	graphics {
+        location_check: loc_check_metl;
+	}
+}
+# 1 "FBIS.pnml" 1
+# 1 "src/industry/tool.nml" 1
+
+tilelayout industry_layout_tool {
+	0,0:	ind_tile_cobble;	0,1:	ind_tile_cobble;	0,2:	ind_tile_cobble;
+	1,0:	ind_tile_cobble;	1,1:	ind_tile_cobble;	1,2:	ind_tile_cobble;
+	2,0:	ind_tile_cobble;	2,1:	ind_tile_cobble;	2,2:	ind_tile_cobble;
+	3,0:	ind_tile_cobble;	3,1:	ind_tile_cobble;	3,2:	ind_tile_cobble;
+	4,0:	ind_tile_cobble;	4,1:	ind_tile_cobble;	4,2:	ind_tile_cobble;
 }
 
-/* Tool Factory industry */
-item (FEAT_INDUSTRIES, industry_tool, 38) {
+switch (FEAT_INDUSTRIES, SELF, loc_check_tool, IsCity() && IsInTown() && CityHasNoSecondaryIndustries()) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_SECONDARY);}
+
+/* TOOL FACTORY */
+item (FEAT_INDUSTRIES, industry_tool, 31) {
 	property {
         substitute: 0;
         override: 0;
@@ -1600,30 +2374,11 @@ item (FEAT_INDUSTRIES, industry_tool, 38) {
         prob_in_game: 0;
 		fund_cost_multiplier: 1;
 		layouts: [
-			industry_layout_cobble,
+			industry_layout_tool,
 		];
 	}
-}
-
-/* Fishing Grounds industry */
-item (FEAT_INDUSTRIES, industry_fish, 40) {
-	property {
-        substitute: 0;
-        override: 0;
-        map_colour: 160;
-		life_type: IND_LIFE_TYPE_BLACK_HOLE;
-		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS, IND_FLAG_BUILT_ON_WATER, IND_FLAG_AI_CREATES_AIR_AND_SHIP_ROUTES);
-        cargo_types: [produce_cargo("FISH",8)];
-		name: string(STR_INDUSTRY_FISH);
-		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_FISH));
-        prob_map_gen: 10; // Account for difficulty of finding suitable locatiom
-        prob_in_game: 0;
-		fund_cost_multiplier: 1;
-		layouts: [
-			industry_layout_offshore,
-		];
+	graphics {
+        location_check: loc_check_tool;
 	}
 }
-
-
-# 1 "FSTIS.pnml" 1
+# 1 "FBIS.pnml" 1

@@ -1,6 +1,0 @@
-#include "src/header.nml"
-#include "src/cargos.nml"
-#include "src/functions.nml"
-
-#include "src/coal_mine.nml"
-#include "src/iron_mine.nml"

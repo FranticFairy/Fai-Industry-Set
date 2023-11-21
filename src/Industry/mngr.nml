@@ -1,0 +1,33 @@
+
+tilelayout industry_layout_mngr {
+	0,0:	ind_tile_concrete;	0,1:	ind_tile_concrete;	0,2:	ind_tile_concrete;
+	1,0:	ind_tile_concrete;	1,1:	ind_tile_concrete;	1,2:	ind_tile_concrete;
+	2,0:	ind_tile_concrete;	2,1:	ind_tile_concrete;	2,2:	ind_tile_concrete;
+	3,0:	ind_tile_concrete;	3,1:	ind_tile_concrete;	3,2:	ind_tile_concrete;
+	//4,0:	ind_tile_concrete;	4,1:	ind_tile_concrete;	4,2:	ind_tile_concrete;
+}
+
+switch (FEAT_INDUSTRIES, SELF, loc_check_mngr, IsInTown() && CityHasNoSecondaryIndustries() && IndustryElevationCheck(0,4)) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_SECONDARY);}
+
+/* FISHMONGER */
+item (FEAT_INDUSTRIES, industry_mngr, 18) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 169;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("FOOD",8),accept_cargo("FISH")];
+		name: string(STR_INDUSTRY_MNGR);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_MNGR));
+        prob_map_gen: 10; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_mngr,
+		];
+	}
+	graphics {
+        location_check: loc_check_mngr;
+	}
+}

@@ -1,0 +1,63 @@
+
+tilelayout industry_layout_clay {
+	0,0:	ind_tile_dirt;	0,1:	ind_tile_dirt;	0,2:	ind_tile_dirt;
+	1,0:	ind_tile_dirt;	1,1:	ind_tile_dirt;	1,2:	ind_tile_dirt;
+	2,0:	ind_tile_dirt;	2,1:	ind_tile_dirt;	2,2:	ind_tile_dirt;
+	3,0:	ind_tile_dirt;	3,1:	ind_tile_dirt;	3,2:	ind_tile_dirt;
+	4,0:	ind_tile_dirt;	4,1:	ind_tile_dirt;	4,2:	ind_tile_dirt;
+}
+
+tilelayout industry_layout_clay_small {
+	0,0:	ind_tile_dirt;	0,1:	ind_tile_dirt;	0,2:	ind_tile_dirt;
+	1,0:	ind_tile_dirt;	1,1:	ind_tile_dirt;	1,2:	ind_tile_dirt;
+	2,0:	ind_tile_dirt;	2,1:	ind_tile_dirt;	2,2:	ind_tile_dirt;
+	3,0:	ind_tile_dirt;	3,1:	ind_tile_dirt;	3,2:	ind_tile_dirt;
+}
+
+switch (FEAT_INDUSTRIES, SELF, loc_check_clay, IsInQuadrantW() && IndustryElevationCheck(4,255)) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_PRIMARY);}
+switch (FEAT_INDUSTRIES, SELF, loc_check_clay_small, !IsInQuadrantW() && IndustryElevationCheck(4,255)) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_PRIMARY);}
+
+/* QUARRY */
+item (FEAT_INDUSTRIES, industry_clay, 12) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 194;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("CLAY",6),produce_cargo("SAND",6),accept_cargo("ENSP")];
+		name: string(STR_INDUSTRY_CLAY);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_CLAY));
+        prob_map_gen: 10; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_clay,
+		];
+	}
+	graphics {
+        location_check: loc_check_clay;
+	}
+}
+
+item (FEAT_INDUSTRIES, industry_clay_small, 13) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 194;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [produce_cargo("CLAY",3),produce_cargo("SAND",3),accept_cargo("ENSP")];
+		name: string(STR_INDUSTRY_CLAY_SMALL);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_CLAY));
+        prob_map_gen: 5; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_clay_small,
+		];
+	}
+	graphics {
+        location_check: loc_check_clay_small;
+	}
+}

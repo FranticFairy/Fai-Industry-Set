@@ -1,8 +1,10 @@
 ##grflangid 0x01
 ##plural 0
 
-STR_GRF_NAME :Fairy's Small Industry Set
+STR_GRF_NAME :Fairy's Industry Set
+STR_GRF_NAME_SMALL :Fairy's One-Tile Industry Set
 STR_GRF_DESC :My attempt at an industry set, standing on the shoulders of giants as usual. Code based on 2TallTyler's Improved Town Industries. Sprites from Andythenorth's FIRS and GarryG's AuzSets
+STR_GRF_DESC_SMALL :OTIS but Fai c:
 
 STR_PARAM_PRIMARY_QUADRANTS_NAME    :Primary industry regions
 STR_PARAM_PRIMARY_QUADRANTS_DESC    :{LTBLUE}Default value: {ORANGE}On{}{WHITE}If enabled, primary industries spawn only in certain parts of the map.
@@ -18,13 +20,100 @@ STR_EMPTY                           :
 STR_TOWN								:{STRING}
 STR_STATION								:{STRING} {STRING}
 
-STR_INDUSTRY_COAL_MINE:Coal Mine
-STR_INDUSTRY_COAL_MINE_SMALL:Small Coal Mine
-STR_STATION_COAL_MINE:Colliery
+STR_INDUSTRY_COAL_SMALL:Small Coal Mine
 
-STR_INDUSTRY_IRON_MINE:Iron Mine
-STR_INDUSTRY_IRON_MINE_SMALL:Small Iron Mine
-STR_STATION_IRON_MINE:Mines
+STR_INDUSTRY_IORE_SMALL:Small Iron Mine
+
+STR_INDUSTRY_WOOD_SMALL:Small Forestry
+
+STR_INDUSTRY_CLAY_SMALL:Small Quarry
+
+STR_INDUSTRY_COAL:Coal Mine
+STR_STATION_COAL:Colliery
+
+STR_INDUSTRY_IORE:Iron Mine
+STR_STATION_IORE:Mines
+
+STR_INDUSTRY_WOOD:Forestry
+STR_STATION_WOOD:Forest
+
+STR_INDUSTRY_FRUT:Orchard
+STR_STATION_FRUT:Orchard
+
+STR_INDUSTRY_OIL_:Oil Wells
+STR_STATION_OIL_:Wells
+
+STR_INDUSTRY_WDPR:Sawmill
+STR_STATION_WDPR:Sawmill
+
+STR_INDUSTRY_SLAG:Slag Grinding Plant
+STR_STATION_SLAG:Grinding Plant
+
+STR_INDUSTRY_COKE:Coke Oven
+STR_STATION_COKE:Ovens
+
+STR_INDUSTRY_STEL:Steel Mill
+STR_STATION_STEL:Steel Mill
+
+STR_INDUSTRY_LVST:Pasture
+STR_STATION_LVST:Pasture
+
+STR_INDUSTRY_CLAY:Quarry
+STR_STATION_CLAY:Pit
+
+STR_INDUSTRY_GRAI:Farm
+STR_STATION_GRAI:Farms
+
+STR_INDUSTRY_MILK:Dairy Plant
+STR_STATION_MILK:Dairy
+
+STR_INDUSTRY_MEAT:Stockyard
+STR_STATION_MEAT:Stockyard
+
+STR_INDUSTRY_MNGR:Fishmonger
+STR_STATION_MNGR:Fishmonger
+
+STR_INDUSTRY_LMBR:Lumberyard
+STR_STATION_LMBR:Lumberyard
+
+STR_INDUSTRY_ASSY:Assembly Plant
+STR_STATION_ASSY:Assembly Plant
+
+STR_INDUSTRY_PETR:Oil Refinery
+STR_STATION_PETR:Refinery
+
+STR_INDUSTRY_POWR:Power Plant
+STR_STATION_POWR:Power Plant
+
+STR_INDUSTRY_WOOL:Textile Mill
+STR_STATION_WOOL:Textile Mill
+
+STR_INDUSTRY_BRED:Flour Mill
+STR_STATION_BRED:Flour Mill
+
+STR_INDUSTRY_BEER:Brewery
+STR_STATION_BEER:Brewery
+
+STR_INDUSTRY_SEAT:Furniture Factory
+STR_STATION_SEAT:Furniture Factory
+
+STR_INDUSTRY_GLAS:Glassworks
+STR_STATION_GLAS:Glassworks
+
+STR_INDUSTRY_BDMT:Brickworks
+STR_STATION_BDMT:Brickworks
+
+STR_INDUSTRY_YARD:Builder's Yard
+STR_STATION_YARD:Builder's Yard
+
+STR_INDUSTRY_METL:Ironworks
+STR_STATION_METL:Ironworks
+
+STR_INDUSTRY_TOOL:Tool Factory
+STR_STATION_TOOL:Tool Factory
+
+STR_INDUSTRY_FISH:Fishing Grounds
+STR_STATION_FISH:Fishing Grounds
 
 STR_CARGO_ABBREV_BDMT:{TINYFONT}BDMT
 STR_CARGO_ABBREV_CLAY:{TINYFONT}CLAY

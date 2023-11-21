@@ -1,0 +1,32 @@
+
+tilelayout industry_layout_yard {
+	0,0:	ind_tile_cobble;	0,1:	ind_tile_cobble;	0,2:	ind_tile_cobble;
+	1,0:	ind_tile_cobble;	1,1:	ind_tile_cobble;	1,2:	ind_tile_cobble;
+	2,0:	ind_tile_cobble;	2,1:	ind_tile_cobble;	2,2:	ind_tile_cobble;
+	3,0:	ind_tile_cobble;	3,1:	ind_tile_cobble;	3,2:	ind_tile_cobble;
+}
+
+switch (FEAT_INDUSTRIES, SELF, loc_check_yard, IsInTown() && TownHasPopulation(400) && CityHasNoSecondaryIndustries() && NoNearbyCompetitors(industry_yard, 128)) {1: return CB_RESULT_LOCATION_ALLOW; return string(STR_LOC_ERROR_SECONDARY);}
+
+/* BUILDER'S YARD */
+item (FEAT_INDUSTRIES, industry_yard, 29) {
+	property {
+        substitute: 0;
+        override: 0;
+        map_colour: 173;
+		life_type: IND_LIFE_TYPE_BLACK_HOLE;
+		spec_flags: bitmask(IND_FLAG_LONG_CARGO_TYPE_LISTS);
+        cargo_types: [accept_cargo("BDMT")];
+		name: string(STR_INDUSTRY_YARD);
+		nearby_station_name: string(STR_STATION, string(STR_TOWN), string(STR_STATION_YARD));
+        prob_map_gen: 10; // Account for difficulty of finding suitable locatiom
+        prob_in_game: 0;
+		fund_cost_multiplier: 1;
+		layouts: [
+			industry_layout_yard,
+		];
+	}
+	graphics {
+        location_check: loc_check_yard;
+	}
+}

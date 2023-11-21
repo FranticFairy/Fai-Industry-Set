@@ -1,7 +1,7 @@
 grf {
-	grfid: "FBIS";
-	name: string(STR_GRF_NAME);
-	desc: string(STR_GRF_DESC);
+	grfid: "FSIS";
+	name: string(STR_GRF_NAME_SMALL);
+	desc: string(STR_GRF_DESC_SMALL);
 	version: 27;
 	min_compatible_version: 23;
 
